@@ -26,8 +26,9 @@ app.use(cookieParser());
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigin = [
-      'http://localhost:5173',
-      'http://localhost:5000',
+    //  'http://localhost:5173',
+   //   'http://localhost:5000',
+      'https://regno-hospital-h433p54qa-api-shopito-app.vercel.app'
     ];
     if (!origin || allowedOrigin.includes(origin)) {
       callback(null, true);
