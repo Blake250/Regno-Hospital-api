@@ -27,8 +27,10 @@ const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigin = [
     //  'http://localhost:5173',
-   //   'http://localhost:5000',
-      'https://regno-hospital-h433p54qa-api-shopito-app.vercel.app'
+    //  'http://localhost:5000',
+   'https://regno-hospital-h433p54qa-api-shopito-app.vercel.app',
+  'https://regno-hospital-api.onrender.com/'
+ 
     ];
     if (!origin || allowedOrigin.includes(origin)) {
       callback(null, true);
