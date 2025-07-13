@@ -104,8 +104,8 @@ const registerUser = asyncHandler(async (req, res) => {
         path: '/',
         httpOnly: true,
       //  secure: process.env.NODE_ENV !== 'production',
-      // secure:true,
-      // sameSite: 'none',    
+      secure:true,
+      sameSite: 'none',    
         expires: new Date(Date.now() + 1000 * 86400 * `${TOKEN_EXPIRES_IN_DAYS}` ), // 1 day
       
    
@@ -183,8 +183,8 @@ const  user = await User.findOne({email:email})
             path:'/',
             httpOnly:true,
            // sameSite:'lax',
-          //  secure:true,
-          //  sameSite: 'none',
+           secure:true,
+           sameSite: 'none',
             expires:new Date(Date.now() + 1000 * 86400 * `${TOKEN_EXPIRES_IN_DAYS}`)
           
         })    
