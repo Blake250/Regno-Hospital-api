@@ -28,8 +28,8 @@ const corsOptions = {
     const allowedOrigin = [
     //  'http://localhost:5173',
     //  'http://localhost:5000',
-   'https://regno-hospital-h433p54qa-api-shopito-app.vercel.app',
-  'https://regno-hospital-api.onrender.com/'
+  'https://regno-hospital-app.vercel.app/',
+  'https://regno-hospital-api.onrender.com'
  
     ];
     if (!origin || allowedOrigin.includes(origin)) {
