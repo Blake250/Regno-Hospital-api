@@ -159,7 +159,7 @@ const verifyPaypalPayment = asyncHandler(async (req, res) => {
   });
 
   const orderStatus = orderRes.data.status;
-
+ 
   if (orderStatus !== 'COMPLETED') {
     res.status(400);
     throw new Error('Payment not completed.');
