@@ -11,24 +11,6 @@ const docModel = require('../models/docModel');
 
 
 
-// const appointmentCancel = asyncHandler(async(req,res)=>{
-//     const appointmentId = req.user._id
-//  const   updateBooking = await appointmentModel.findByIdAndUpdate(appointmentId,
-//      {cancel:true}, {new:true})
-//         if(!updateBooking){
-//             res.status(400)
-//             throw new Error('no appointment found')
-//         }res.status(200).json({
-//             message:"booking is successfully cancel"
-//         })
-// })
-
-
-
-
-
-
-
 
 const addDoctor = asyncHandler(async (req, res) => {
   const { name, email, password, speciality, degree, experience, about, fees, address, available, photo } = req.body;
@@ -125,36 +107,7 @@ const addDocPhoto  = asyncHandler(async(req,res)=>{
 
 
 
-// const getAllDoctors = asyncHandler(async (req,res)=>{
 
-//   const getDoctors = await docModel.find({})
-//   .select('-password')
-//   .populate('user')
-//   .lean()
-//   //.populate('user', 'name email photo role')
-//  // .lean();
-
-// const filteredDoctors = getDoctors.filter(doc => doc?.user); // remove broken population
-
-// if (!filteredDoctors?.length) {
-//   res.status(400);
-//   throw new Error('No valid doctor data found');
-// }
-
-// // if(!getDoctors || getDoctors.length === 0){
-// //   res.status(404);
-// //   throw new Error('No valid doctor data found');
-// // }
-// res.status(200).json({
-//   doctors: getDoctors,
-//   message: 'Doctors fetched successfully'
-// });
-
-
-// } )
-
-
-const asyncHandler = require('express-async-handler');
 
 const getAllDoctors = asyncHandler(async (req, res, next) => {
   try {
