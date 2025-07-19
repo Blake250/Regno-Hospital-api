@@ -28,9 +28,9 @@ const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
       // 'https://regno-hospital-app.vercel.app',
-      // 'http://localhost:5173'
-    // 'https://regno-hospital-api.onrender.com',
-    '*'
+      'http://localhost:5173',
+    'https://regno-hospital-api.onrender.com',
+   
     ];
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
@@ -43,8 +43,7 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'x-www-form-urlencoded'],
   allowedMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   maxAge: 1800, // 30 minutes, matching Access-Control-Max-Age
-  // Note: Access-Control-Allow-Origin is handled by the 'origin' function
-  // Content-Type header for responses can be set globally if needed
+  
 };
 
 // Apply CORS middleware globally
