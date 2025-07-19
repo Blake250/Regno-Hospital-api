@@ -42,9 +42,9 @@ const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
       'https://regno-hospital-app.vercel.app',
-    //  'https://regno-hospital-app.vercel.app/',
-      // 'http://localhost:3000', // For local development
-      // 'http://localhost:5173' // For Vite-based local development
+     'https://regno-hospital-app.vercel.app/',
+      // For local development
+      'http://localhost:5173' // For Vite-based local development
     ];
     console.log('Request Origin:', origin); // Log the incoming origin
     if (!origin || allowedOrigins.includes(origin)) {
