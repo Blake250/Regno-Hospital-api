@@ -28,7 +28,7 @@ const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
       'https://regno-hospital-app.vercel.app',
-     'https://regno-hospital-api.onrender.com',
+    // 'https://regno-hospital-api.onrender.com',
     ];
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
