@@ -29,7 +29,8 @@ const corsOptions = {
     const allowedOrigins = [
       // 'https://regno-hospital-app.vercel.app',
      // 'http://localhost:5173',
-    'https://regno-hospital-api.onrender.com',
+    // 'https://regno-hospital-api.onrender.com',
+    '*'
    
     ];
     if (!origin || allowedOrigins.includes(origin)) {
