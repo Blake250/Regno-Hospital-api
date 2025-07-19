@@ -1,6 +1,6 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
-const mongoose = require('mongoose');
+//const mongoose = require('mongoose');
 const dotenv = require('dotenv').config();
 const cors = require('cors');
 
@@ -36,7 +36,7 @@ const corsOptions = {
   },
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'x-www-form-urlencoded'],
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   maxAge: 1800, // 30 minutes, matching Access-Control-Max-Age
   // Note: Access-Control-Allow-Origin is handled by the 'origin' function
   // Content-Type header for responses can be set globally if needed
