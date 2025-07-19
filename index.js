@@ -17,7 +17,7 @@ const { stripeWebhook } = require('./controllers/webhookController');
 const app = express();
 
 // Stripe webhook raw body (must be before express.json())
-app.use('/api/webhook', express.raw({ type: 'application/json' }), stripeWebhook);
+//app.use('/api/webhook', express.raw({ type: 'application/json' }), stripeWebhook);
 
 // Middleware
 app.use(express.json());
