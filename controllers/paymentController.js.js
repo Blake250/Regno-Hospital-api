@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs')
 const appointmentModel = require('../models/appointmentModels')
 const User = require('../models/userModal')
 const { default: mongoose } = require('mongoose')
-dotenv.config(); 
+//dotenv.config(); 
 
 const axios = require('axios');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)

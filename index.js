@@ -3,7 +3,7 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
-const dotenv = require('dotenv').config();
+const dotenv = require('dotenv');
 const cors = require('cors');
 
 const errorHandler = require('./middleWares/errorMiddleWare');
@@ -12,12 +12,12 @@ const docRoutes = require('./routes/docRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const { stripeWebhook } = require('./controllers/webhookController');
-
+dotenv.config();
 
 const app = express();
 
 // Stripe webhook raw body (must be before express.json())
-//app.use('/api/webhook', express.raw({ type: 'application/json' }), stripeWebhook);
+app.use('/api/webhook', express.raw({ type: 'application/json' }), stripeWebhook);
 
 // Middleware
 app.use(express.json());
