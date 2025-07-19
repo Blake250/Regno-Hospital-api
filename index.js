@@ -42,7 +42,7 @@ const corsOptions = {
     }
   },
   credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'x-www-form-urlencoded'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   allowedMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   maxAge: 1800, // 30 minutes, matching Access-Control-Max-Age
   
