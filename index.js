@@ -24,29 +24,54 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// const corsOptions = {
+//   origin: function (origin, callback) {
+//     const allowedOrigins = [
+//       'https://regno-hospital-app.vercel.app', 
+//       'https://regno-hospital-app.vercel.app/',
+    
+//     // 'https://regno-hospital-api.onrender.com',
+      
+   
+   
+//     ];
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       console.log(`CORS blocked: ${origin}`);
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//   },
+//   credentials: true,
+//   allowedHeaders: ['Content-Type', 'Authorization'],
+//   allowedMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+//   maxAge: 1800, // 30 minutes, matching Access-Control-Max-Age
+  
+// };
+
+
+
+
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
       'https://regno-hospital-app.vercel.app',
-      'https://regno-hospital-app.vercel.app/',
-    
-    // 'https://regno-hospital-api.onrender.com',
-      
-   
-   
     ];
-    if (!origin || allowedOrigins.includes(origin)) {
+    
+    // Remove trailing slash for comparison
+    const cleanedOrigin = origin?.replace(/\/$/, '');
+    
+    if (!origin || allowedOrigins.includes(cleanedOrigin)) {
       callback(null, true);
     } else {
-      console.log(`CORS blocked: ${origin}`);
+      console.log(`❌ CORS blocked: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  allowedMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  maxAge: 1800, // 30 minutes, matching Access-Control-Max-Age
-  
+  maxAge: 1800,
 };
 
 // Apply CORS middleware globally
