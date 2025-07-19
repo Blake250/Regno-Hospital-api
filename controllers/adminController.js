@@ -125,33 +125,62 @@ const addDocPhoto  = asyncHandler(async(req,res)=>{
 
 
 
-const getAllDoctors = asyncHandler(async (req,res)=>{
+// const getAllDoctors = asyncHandler(async (req,res)=>{
 
-  const getDoctors = await docModel.find({})
-  .select('-password')
-  .populate('user')
-  .lean()
-  //.populate('user', 'name email photo role')
- // .lean();
+//   const getDoctors = await docModel.find({})
+//   .select('-password')
+//   .populate('user')
+//   .lean()
+//   //.populate('user', 'name email photo role')
+//  // .lean();
 
-const filteredDoctors = getDoctors.filter(doc => doc?.user); // remove broken population
+// const filteredDoctors = getDoctors.filter(doc => doc?.user); // remove broken population
 
-if (!filteredDoctors?.length) {
-  res.status(400);
-  throw new Error('No valid doctor data found');
-}
-
-// if(!getDoctors || getDoctors.length === 0){
-//   res.status(404);
+// if (!filteredDoctors?.length) {
+//   res.status(400);
 //   throw new Error('No valid doctor data found');
 // }
-res.status(200).json({
-  doctors: getDoctors,
-  message: 'Doctors fetched successfully'
+
+// // if(!getDoctors || getDoctors.length === 0){
+// //   res.status(404);
+// //   throw new Error('No valid doctor data found');
+// // }
+// res.status(200).json({
+//   doctors: getDoctors,
+//   message: 'Doctors fetched successfully'
+// });
+
+
+// } )
+
+
+const asyncHandler = require('express-async-handler');
+
+const getAllDoctors = asyncHandler(async (req, res, next) => {
+  try {
+    const getDoctors = await docModel
+      .find({})
+      .select('-password')
+      .populate('user', 'name email photo role') // Specify fields to populate
+      .lean();
+
+    const filteredDoctors = getDoctors.filter(doc => doc?.user); // Remove broken population
+
+    if (!filteredDoctors?.length) {
+      res.status(404); // Use 404 for "not found" instead of 400
+      throw new Error('No valid doctor data found');
+    }
+
+    res.status(200).json({
+      doctors: filteredDoctors, // Use filteredDoctors for consistency
+      message: 'Doctors fetched successfully',
+    });
+  } catch (error) {
+    next(error); // Ensure errors are passed to the error handler
+  }
 });
 
-
-} )
+module.exports = getAllDoctors;
 
 
 
