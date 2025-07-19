@@ -38,32 +38,57 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// const corsOptions = {
+//   origin: function (origin, callback) {
+//     const allowedOrigins = [
+//       'https://regno-hospital-app.vercel.app',
+//      'https://regno-hospital-app.vercel.app/',
+//       // For local development
+//       'http://localhost:5173' // For Vite-based local development
+//     ];
+//     console.log('Request Origin:', origin); // Log the incoming origin
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       console.log(`CORS blocked: ${origin}`);
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//   },
+//   credentials: true,
+//   allowedHeaders: ['Content-Type', 'Authorization'],
+//   allowedMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+//   maxAge: 1800,
+//   optionsSuccessStatus: 204 // Handle preflight requests
+// };
+
+
+
+
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
       'https://regno-hospital-app.vercel.app',
-     'https://regno-hospital-app.vercel.app/',
-      // For local development
-      'http://localhost:5173' // For Vite-based local development
     ];
-    console.log('Request Origin:', origin); // Log the incoming origin
-    if (!origin || allowedOrigins.includes(origin)) {
+
+    if (!origin || allowedOrigins.includes(origin.replace(/\/$/, ''))) {
       callback(null, true);
     } else {
-      console.log(`CORS blocked: ${origin}`);
+      console.log(`❌ CORS blocked: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  allowedMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  maxAge: 1800,
-  optionsSuccessStatus: 204 // Handle preflight requests
 };
+
 
 // Apply CORS middleware globally
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions)); // Explicitly handle preflight requests for all routes
+
+
+
 
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URL, {
