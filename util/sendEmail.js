@@ -20,7 +20,7 @@ const sendEmail = async(subject, send_to,template, reply_to, cc)=>{
         theme:'salted',
         product:{
             name:'Regno Hospital',
-            link:'http://localhost:5173/'
+            link:'https://regno-hospital-app.vercel.app'
         }
     });
 
