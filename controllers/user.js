@@ -8,7 +8,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY) // Import Stripe
 const User = require('../models/userModal')
 const docModel = require('../models/docModel')
 const appointmentModel = require('../models/appointmentModels')
-const { default: mongoose } = require('mongoose')
+const   mongoose  = require('mongoose')
 const { appointmentSuccessEmail } = require('../emailTemplate/appointmentTemplate')
 const sendEmail = require('../util/sendEmail')
 
@@ -88,8 +88,6 @@ const registerUser = asyncHandler(async (req, res) => {
     });
     console.log(`this is the user: ${user.role} for this user `)
 
-
-
     console.log("Hashed password:", user.password);
  
     // Generate a token
@@ -98,15 +96,14 @@ const registerUser = asyncHandler(async (req, res) => {
     if(user ){
       
     
-
     // Send token in cookies
     res.cookie('token', token, {
         path: '/',
         httpOnly: true,
       //  secure: process.env.NODE_ENV !== 'production',
       expires: new Date(Date.now() + 1000 * 86400 * `${TOKEN_EXPIRES_IN_DAYS}` ),
-      secure:true,
-      sameSite: 'none',    
+      // secure:true,
+      // sameSite: 'none',    
         // 1 day
       
    
@@ -185,8 +182,8 @@ const  user = await User.findOne({email:email})
             httpOnly:true,
            // sameSite:'lax',
            expires:new Date(Date.now() + 1000 * 86400 * `${TOKEN_EXPIRES_IN_DAYS}`),
-           secure:true,
-           sameSite: 'none',
+          //  secure:true,
+          //  sameSite: 'none',
            
           
         })    
@@ -220,7 +217,7 @@ const logoutUser = asyncHandler(async(req, res)=>{
 })
 
 
-
+ 
 const getUser = asyncHandler(async (req, res) => {
    // console.log("Cookies received on /get-status route:", req.cookies);
 
@@ -253,13 +250,18 @@ const getLoginStatus = asyncHandler(async (req, res) => {
     const token = req.cookies ? req.cookies.token : '';
  //console.log(`it looks like this ${token}`)
   
-    if (!token ) {
-      return res.status(401).json({
-        isLoggedIn: false,
-        message: 'No Token Provided',
-      });
-    }
+    // if (!token ) {
+    //   return res.status(401).json({
+    //     isLoggedIn: false,
+    //     message: 'No Token Provided',
+    //   });
+    // }
   
+    if (!token) {
+      return res.json(false);
+    }
+
+
     try {
       const decoded = jwt.verify(token, process.env.SECRET_KEY);
    //  console.log(`the ${JSON.stringify(decoded )} was successful`)
