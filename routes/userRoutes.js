@@ -26,8 +26,9 @@ const router = express.Router()
 router.post('/register', registerUser)
 router.post('/login', loginUser)
 router.get('/logout', logoutUser )
-router.get('/get-status', getLoginStatus)
 router.get('/getUser',protect, getUser )
+router.get('/get-status', getLoginStatus)
+
 
 router.patch('/update-user', protect,updateUser)
 router.patch('/update-photo', protect, updatePhoto)
