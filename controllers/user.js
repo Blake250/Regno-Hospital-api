@@ -29,7 +29,7 @@ return   jwt.sign({id:id}, process.env.SECRET_KEY, {expiresIn : `${TOKEN_EXPIRES
 const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password , role} = req.body;
 
-    //const userRole = role || 'customer'; // Default to 'customer' if no role is provided
+    const userRole = 'customer'; // Default to 'customer' if no role is provided
     // const { speciality, degree, experience, about, photo, fees, address, available
 
     // Validate inputs
@@ -82,7 +82,7 @@ const registerUser = asyncHandler(async (req, res) => {
         name,
         email,
         password,
-        role 
+        role : userRole, // Use the default role  
         
 
     });
