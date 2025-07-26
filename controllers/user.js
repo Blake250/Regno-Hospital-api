@@ -29,7 +29,7 @@ return   jwt.sign({id:id}, process.env.SECRET_KEY, {expiresIn : `${TOKEN_EXPIRES
 const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password , role} = req.body;
 
-    const userRole = 'customer'; // Default to 'customer' if no role is provided
+    const userRole = role || 'customer'; // Default to 'customer' if no role is provided
     // const { speciality, degree, experience, about, photo, fees, address, available
 
     // Validate inputs
@@ -43,32 +43,7 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new Error("Password must be at least 6 characters");
     }
 
-    //    // Role-specific validation (for doctors)
-    // if(role=== 'doctor'){
-    //   if(
-    //     !speciality ||
-    //      !degree ||
-    //     !experience ||
-    //     !about ||
-    //     !photo ||
-    //     address
-    //     // !address : {
-    //     //   line1:
-    //     //   line2:""
-    //     // },
-
-    //     typeof available !== 'boolean' ||
-    //     typeof fees !== 'number' ||
-       
-        
-    //     typeof available ===  'undefined' ||
-    //   !fees ||
-    //    !address !== 'object' || !address.line1
-    //   )
-    //   res.status(400)
-    //   throw new Error('Enter all required fields')
-    // }
-
+    
     // Check if user already exists
     const userExists = await User.findOne({ email:email });
     if (userExists) {
@@ -82,7 +57,7 @@ const registerUser = asyncHandler(async (req, res) => {
         name,
         email,
         password,
-        role : userRole, // Use the default role  
+        role : userRole  
         
 
     });
@@ -102,8 +77,8 @@ const registerUser = asyncHandler(async (req, res) => {
         httpOnly: true,
       //  secure: process.env.NODE_ENV !== 'production',
       expires: new Date(Date.now() + 1000 * 86400 * `${TOKEN_EXPIRES_IN_DAYS}` ),
-      secure:true,
-      sameSite: 'none',    
+      // secure:true,
+      // sameSite: 'none',    
         // 1 day
       
    
@@ -182,8 +157,8 @@ const  user = await User.findOne({email:email})
             httpOnly:true,
            // sameSite:'lax',
            expires:new Date(Date.now() + 1000 * 86400 * `${TOKEN_EXPIRES_IN_DAYS}`),
-           secure:true,
-           sameSite: 'none',
+          //  secure:true,
+          //  sameSite: 'none',
            
           
         })    
