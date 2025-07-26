@@ -4,7 +4,7 @@ const router = express.Router();
 const { protect, adminOnly } = require('../middleWares/authMiddleWare');
 const { getAllDoctors, addDoctor, addDocPhoto, appointmentAdmin, appointmentCancel } = require('../controllers/adminController');
 
-router.get('/get-docs', protect, adminOnly, getAllDoctors);
+router.get('/get-docs', protect, getAllDoctors);
 router.post('/add-doc', protect, adminOnly, addDoctor);
 router.post('/add-doc-photo', protect, adminOnly, addDocPhoto);
 router.get('/appointments', protect, adminOnly, appointmentAdmin);
