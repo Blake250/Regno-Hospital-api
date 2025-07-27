@@ -13,6 +13,7 @@ const { registerUser,
      getOneDoctor,
      updatePaymentMethod} = require('../controllers/user')
 const { protect, doctorsOnly } = require('../middleWares/authMiddleWare')
+const {getAllDoctors} = require('../controllers/adminController')
 
 
 const router = express.Router()
@@ -47,7 +48,7 @@ router.patch('/cancel-doc', protect,  cancelAppointment  )
 
 router.patch('/:appointmentId/payment-method', protect, updatePaymentMethod);
 
-
+router.get('/get-docs', protect, getAllDoctors);
 
 
 
