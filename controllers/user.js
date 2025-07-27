@@ -27,7 +27,7 @@ return   jwt.sign({id:id}, process.env.SECRET_KEY, {expiresIn : `${TOKEN_EXPIRES
 
 
 const registerUser = asyncHandler(async (req, res) => {
-    const { name, email, password , role} = req.body;
+    const { name, email, password ,role } = req.body;
 
     const userRole = role || 'customer'; // Default to 'customer' if no role is provided
     // const { speciality, degree, experience, about, photo, fees, address, available
@@ -57,8 +57,7 @@ const registerUser = asyncHandler(async (req, res) => {
         name,
         email,
         password,
-        role : userRole  
-        
+        role : userRole
 
     });
     console.log(`this is the user: ${user.role} for this user `)
@@ -77,8 +76,8 @@ const registerUser = asyncHandler(async (req, res) => {
         httpOnly: true,
       //  secure: process.env.NODE_ENV !== 'production',
       expires: new Date(Date.now() + 1000 * 86400 * `${TOKEN_EXPIRES_IN_DAYS}` ),
-      secure:true,
-      sameSite: 'none',    
+      // secure:true,
+      // sameSite: 'none',    
         // 1 day
       
    
@@ -157,8 +156,8 @@ const  user = await User.findOne({email:email})
             httpOnly:true,
            // sameSite:'lax',
            expires:new Date(Date.now() + 1000 * 86400 * `${TOKEN_EXPIRES_IN_DAYS}`),
-           secure:true,
-           sameSite: 'none',
+          //  secure:true,
+          //  sameSite: 'none',
            
           
         })    
@@ -722,6 +721,38 @@ const updatePaymentMethod = asyncHandler(async (req, res) => {
 
 
 
+const getAllDoctors = asyncHandler(async (req, res, next) => {
+  try {
+    const getDoctors = await docModel
+      .find({})
+      .select('-password')
+      .populate('user', 'name email photo role') // Specify fields to populate
+      .lean();
+
+    const filteredDoctors = getDoctors.filter(doc => doc?.user); // Remove broken population
+
+    if (!filteredDoctors?.length) {
+      res.status(404); // Use 404 for "not found" instead of 400
+      throw new Error('No valid doctor data found');
+    }
+
+    res.status(200).json({
+       // doctors: getDoctors,
+     doctors: filteredDoctors, // Use filteredDoctors for consistency
+      message: 'Doctors fetched successfully',
+    });
+  } catch (error) {
+    next(error); // Ensure errors are passed to the error handler
+  }
+});
+
+
+
+
+
+
+
+
 
 module.exports = {
     registerUser,
@@ -736,7 +767,8 @@ module.exports = {
     getSingleBooking,
    getAllBookings,
    getOneDoctor,
-  updatePaymentMethod  
+  updatePaymentMethod , 
+  getAllDoctors,  
 //    payWithStripe,
 // verifyStripePayment
 }
