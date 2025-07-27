@@ -11,9 +11,10 @@ const { registerUser,
      getSingleBooking,
      getAllBookings,
      getOneDoctor,
-     updatePaymentMethod} = require('../controllers/user')
+     updatePaymentMethod,
+     getAllDoctors} = require('../controllers/user')
 const { protect, doctorsOnly } = require('../middleWares/authMiddleWare')
-const {getAllDoctors} = require('../controllers/adminController')
+
 
 
 const router = express.Router()
@@ -38,6 +39,7 @@ router.post('/doc-booking/:docId', protect,  bookAppointment )
 
 router.get('/appointments',protect, getAllBookings)  
 router.get('/fetch-doc/:id',protect, getOneDoctor)  
+router.get('/get-docs', protect, getAllDoctors);
 
 
 router.get('/appointments/:id', protect, getSingleBooking)  
