@@ -109,33 +109,6 @@ const addDocPhoto  = asyncHandler(async(req,res)=>{
 
 
 
-const getAllDoctors = asyncHandler(async (req, res, next) => {
-  try {
-    const getDoctors = await docModel
-      .find({})
-      .select('-password')
-      .populate('user', 'name email photo role') // Specify fields to populate
-      .lean();
-
-    const filteredDoctors = getDoctors.filter(doc => doc?.user); // Remove broken population
-
-    if (!filteredDoctors?.length) {
-      res.status(404); // Use 404 for "not found" instead of 400
-      throw new Error('No valid doctor data found');
-    }
-
-    res.status(200).json({
-      doctors: filteredDoctors, // Use filteredDoctors for consistency
-      message: 'Doctors fetched successfully',
-    });
-  } catch (error) {
-    next(error); // Ensure errors are passed to the error handler
-  }
-});
-
-module.exports = getAllDoctors;
-
-
 
 
 
@@ -198,7 +171,7 @@ const appointmentCancel = asyncHandler(async (req, res) => {
 
   addDoctor,
   addDocPhoto,
-  getAllDoctors,
+  //getAllDoctors,
   appointmentCancel
   };
   
