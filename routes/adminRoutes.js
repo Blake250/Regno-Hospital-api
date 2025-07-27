@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const { protect, adminOnly } = require('../middleWares/authMiddleWare');
-const {  addDoctor, addDocPhoto, appointmentAdmin, appointmentCancel } = require('../controllers/adminController');
+const {  addDoctor, addDocPhoto, appointmentAdmin, appointmentCancel, getAllDoctors } = require('../controllers/adminController');
 
 router.get('/get-docs', protect, getAllDoctors);
 router.post('/add-doc', protect, adminOnly, addDoctor);
