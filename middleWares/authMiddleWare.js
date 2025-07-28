@@ -29,7 +29,8 @@ const protect = asyncHandler(async (req, res, next) => {
     next();
   } catch (error) {
     res.status(error.message === 'Token not provided' ? 401 : 403);
-    next(error);
+    // next(error);
+    console.log(`Error in auth middleware: ${error.message}`);  
   }
 });
 

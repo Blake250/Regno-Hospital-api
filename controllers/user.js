@@ -76,8 +76,8 @@ const registerUser = asyncHandler(async (req, res) => {
         httpOnly: true,
       //  secure: process.env.NODE_ENV !== 'production',
       expires: new Date(Date.now() + 1000 * 86400 * `${TOKEN_EXPIRES_IN_DAYS}` ),
-      // secure:true,
-      // sameSite: 'none',    
+      secure:true,
+      sameSite: 'none',    
         // 1 day
       
    
@@ -156,8 +156,8 @@ const  user = await User.findOne({email:email})
             httpOnly:true,
            // sameSite:'lax',
            expires:new Date(Date.now() + 1000 * 86400 * `${TOKEN_EXPIRES_IN_DAYS}`),
-          //  secure:true,
-          //  sameSite: 'none',
+           secure:true,
+           sameSite: 'none',
            
           
         })    
@@ -191,32 +191,27 @@ const logoutUser = asyncHandler(async(req, res)=>{
 })
 
 
- 
+
+
+// Get user details
 const getUser = asyncHandler(async (req, res) => {
-   // console.log("Cookies received on /get-status route:", req.cookies);
+  const user = await User.findById(req.user._id);
+ 
+  if (user) {
+    res.status(201).json(user);
+  } else {
+    res.status(400);
+    throw new Error("User not found...");
+  }
+});
 
-    try {
-    //console.log("req.user >>>", req.user);
-      const user = await User.findById(req.user._id);
-      console.log(`Found user: ${user}`);
-  
-     
-      if(!user){
-        res.status(400)
-        throw new Error('User Not Found') 
-      }
-        else{
-            res.status(200).json(user)
-        }
-      
-    } catch (error) {
-        console.error("Error in getUser:", error.message);
-      res.status(500).json({ message: 'No User Found'});
-    }
-  });
-  
 
-  
+
+
+
+
+
+
 const getLoginStatus = asyncHandler(async (req, res) => {
     console.log("Cookies in /get-status route:", req.cookies);
 
@@ -737,8 +732,8 @@ const getAllDoctors = asyncHandler(async (req, res, next) => {
     }
 
     res.status(200).json({
-       // doctors: getDoctors,
-     doctors: filteredDoctors, // Use filteredDoctors for consistency
+    // doctors: getDoctors,
+    doctors: filteredDoctors, // Use filteredDoctors for consistency
       message: 'Doctors fetched successfully',
     });
   } catch (error) {

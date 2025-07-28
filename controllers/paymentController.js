@@ -201,5 +201,5 @@ const verifyPaypalPayment = asyncHandler(async (req, res) => {
     payWithStripe,
     verifyStripePayment,
     verifyPaypalPayment
-  // updatePaymentMethod 
+  //updatePaymentMethod 
   }
