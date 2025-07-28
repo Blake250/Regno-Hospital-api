@@ -717,29 +717,29 @@ const updatePaymentMethod = asyncHandler(async (req, res) => {
 
 
 const getAllDoctors = asyncHandler(async (req, res, next) => {
-  try {
+ // try {
     const getDoctors = await docModel
       .find({})
       .select('-password')
       .populate('user', 'name email photo role') // Specify fields to populate
-      .lean();
+      //.lean();
 
     const filteredDoctors = getDoctors.filter(doc => doc?.user); // Remove broken population
 
     if (!filteredDoctors?.length) {
       res.status(404); // Use 404 for "not found" instead of 400
       throw new Error('No valid doctor data found');
-    }
+    }s
 
     res.status(200).json({
     // doctors: getDoctors,
     doctors: filteredDoctors, // Use filteredDoctors for consistency
       message: 'Doctors fetched successfully',
     });
-  } catch (error) {
-    next(error); // Ensure errors are passed to the error handler
-  }
-});
+//   } catch (error) {
+//     next(error); // Ensure errors are passed to the error handler
+//   }
+ });
 
 
 
