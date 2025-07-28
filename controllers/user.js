@@ -717,78 +717,107 @@ const updatePaymentMethod = asyncHandler(async (req, res) => {
 
 
 
+// const getAllDoctors = asyncHandler(async (req, res, next) => {
+//   try {
+//     console.log('Fetching doctors for user:', req.user?._id || 'No user');
+    
+//     // Fetch doctors with populated user data
+//     const getDoctors = await docModel
+//       .find({})
+//       .select('-password')
+//       .populate({
+//         path: 'user',
+//         select: 'name email photo role',
+//         model: 'User', // Explicitly specify model to avoid schema issues
+//       })
+//      // .lean();
+
+//     console.log('Raw doctors fetched:', getDoctors.length);
+
+//     // Filter out doctors with invalid or missing user references
+//     const filteredDoctors = getDoctors.filter((doc) => {
+//       if (!doc?.user) {
+//         console.warn('Doctor with missing user data:', doc?._id);
+//         return false;
+//       }
+//       return true;
+//     });
+
+//     if (!filteredDoctors?.length) {
+//       console.log('No valid doctors found');
+//       res.status(404);
+//       throw new Error('No valid doctor data found');
+//     }
+
+//     console.log('Filtered doctors:', filteredDoctors.length);
+//     res.status(200).json({
+//       doctors: filteredDoctors,
+//       message: 'Doctors fetched successfully',
+//     });
+//   } catch (error) {
+//     console.error('getAllDoctors error:', error.message, error.stack);
+//     next(error); // Pass to error middleware
+//   }
+// });
+
+
+
+
+
 const getAllDoctors = asyncHandler(async (req, res, next) => {
   try {
     console.log('Fetching doctors for user:', req.user?._id || 'No user');
-    
-    // Fetch doctors with populated user data
-    const getDoctors = await docModel
-      .find({})
+
+    // Validate ObjectIds before querying
+    const doctors = await docModel.find({}).select('-password').lean();
+    console.log('Raw doctors fetched:', doctors.length);
+
+    // Filter out invalid user references
+    const validDoctorIds = [];
+    const invalidDoctors = [];
+    for (const doc of doctors) {
+      if (doc.user && mongoose.Types.ObjectId.isValid(doc.user)) {
+        validDoctorIds.push(doc.user);
+      } else {
+        invalidDoctors.push(doc._id);
+        console.warn('Doctor with invalid or missing user reference:', doc._id);
+      }
+    }
+
+    if (invalidDoctors.length > 0) {
+      console.log('Invalid doctor IDs:', invalidDoctors);
+    }
+
+    // Populate only valid user references
+    const populatedDoctors = await docModel
+      .find({ user: { $in: validDoctorIds } })
       .select('-password')
       .populate({
         path: 'user',
         select: 'name email photo role',
-        model: 'User', // Explicitly specify model to avoid schema issues
+        model: 'User',
       })
-     // .lean();
+      .lean();
 
-    console.log('Raw doctors fetched:', getDoctors.length);
-
-    // Filter out doctors with invalid or missing user references
-    const filteredDoctors = getDoctors.filter((doc) => {
-      if (!doc?.user) {
-        console.warn('Doctor with missing user data:', doc?._id);
-        return false;
-      }
-      return true;
-    });
-
-    if (!filteredDoctors?.length) {
-      console.log('No valid doctors found');
+    if (!populatedDoctors.length) {
+      console.log('No valid doctors found after population');
       res.status(404);
       throw new Error('No valid doctor data found');
     }
 
-    console.log('Filtered doctors:', filteredDoctors.length);
+    console.log('Populated doctors:', populatedDoctors.length);
     res.status(200).json({
-      doctors: filteredDoctors,
+      doctors: populatedDoctors,
       message: 'Doctors fetched successfully',
     });
   } catch (error) {
     console.error('getAllDoctors error:', error.message, error.stack);
-    next(error); // Pass to error middleware
+    res.status(error.status || 500).json({
+      message: error.message || 'Internal Server Error',
+      stack: process.env.NODE_ENV === 'production' ? undefined : error.stack,
+    });
   }
 });
-
-
-
-
-// const getAllDoctors = asyncHandler(async (req, res, next) => {
-//  // try {
-//     const getDoctors = await docModel
-//       .find({})
-//       .select('-password')
-//       .populate('user', 'name email photo role') // Specify fields to populate
-//       //.lean();
-
-//     const filteredDoctors = getDoctors.filter(doc => doc?.user); // Remove broken population
-
-//     if (!filteredDoctors?.length) {
-//       res.status(404); // Use 404 for "not found" instead of 400
-//       throw new Error('No valid doctor data found');
-//     }s
-
-//     res.status(200).json({
-//     // doctors: getDoctors,
-//     doctors: filteredDoctors, // Use filteredDoctors for consistency
-//       message: 'Doctors fetched successfully',
-//     });
-// //   } catch (error) {
-// //     next(error); // Ensure errors are passed to the error handler
-// //   }
-//  });
-
-
 
 
 
