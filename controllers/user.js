@@ -716,30 +716,77 @@ const updatePaymentMethod = asyncHandler(async (req, res) => {
 
 
 
+
 const getAllDoctors = asyncHandler(async (req, res, next) => {
- // try {
+  try {
+    console.log('Fetching doctors for user:', req.user?._id || 'No user');
+    
+    // Fetch doctors with populated user data
     const getDoctors = await docModel
       .find({})
       .select('-password')
-      .populate('user', 'name email photo role') // Specify fields to populate
-      //.lean();
+      .populate({
+        path: 'user',
+        select: 'name email photo role',
+        model: 'User', // Explicitly specify model to avoid schema issues
+      })
+      .lean();
 
-    const filteredDoctors = getDoctors.filter(doc => doc?.user); // Remove broken population
+    console.log('Raw doctors fetched:', getDoctors.length);
+
+    // Filter out doctors with invalid or missing user references
+    const filteredDoctors = getDoctors.filter((doc) => {
+      if (!doc?.user) {
+        console.warn('Doctor with missing user data:', doc?._id);
+        return false;
+      }
+      return true;
+    });
 
     if (!filteredDoctors?.length) {
-      res.status(404); // Use 404 for "not found" instead of 400
+      console.log('No valid doctors found');
+      res.status(404);
       throw new Error('No valid doctor data found');
-    }s
+    }
 
+    console.log('Filtered doctors:', filteredDoctors.length);
     res.status(200).json({
-    // doctors: getDoctors,
-    doctors: filteredDoctors, // Use filteredDoctors for consistency
+      doctors: filteredDoctors,
       message: 'Doctors fetched successfully',
     });
-//   } catch (error) {
-//     next(error); // Ensure errors are passed to the error handler
-//   }
- });
+  } catch (error) {
+    console.error('getAllDoctors error:', error.message, error.stack);
+    next(error); // Pass to error middleware
+  }
+});
+
+
+
+
+// const getAllDoctors = asyncHandler(async (req, res, next) => {
+//  // try {
+//     const getDoctors = await docModel
+//       .find({})
+//       .select('-password')
+//       .populate('user', 'name email photo role') // Specify fields to populate
+//       //.lean();
+
+//     const filteredDoctors = getDoctors.filter(doc => doc?.user); // Remove broken population
+
+//     if (!filteredDoctors?.length) {
+//       res.status(404); // Use 404 for "not found" instead of 400
+//       throw new Error('No valid doctor data found');
+//     }s
+
+//     res.status(200).json({
+//     // doctors: getDoctors,
+//     doctors: filteredDoctors, // Use filteredDoctors for consistency
+//       message: 'Doctors fetched successfully',
+//     });
+// //   } catch (error) {
+// //     next(error); // Ensure errors are passed to the error handler
+// //   }
+//  });
 
 
 
