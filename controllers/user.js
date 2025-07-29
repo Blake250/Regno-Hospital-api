@@ -729,7 +729,8 @@ const getAllDoctors = asyncHandler(async (req, res, next) => {
         path: 'user',
         select: 'name email photo role',
         model: 'User', // Explicitly specify model to avoid schema issues
-      }).lean();
+      })
+      //.lean();
 
     console.log('Raw doctors fetched:', getDoctors?.length);
 
