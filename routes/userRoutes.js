@@ -25,6 +25,10 @@ const router = express.Router()
 
 
 // route configurations
+router.get('/appointments/:id', protect, getSingleBooking)  
+router.get('/fetch-doc/:id',protect, getOneDoctor)  
+router.post('/doc-booking/:docId', protect,  bookAppointment )
+
 router.post('/register', registerUser)
 router.post('/login', loginUser)
 router.get('/logout', logoutUser )
@@ -35,14 +39,13 @@ router.get('/get-status', getLoginStatus)
 router.patch('/update-user', protect,updateUser)
 router.patch('/update-photo', protect, updatePhoto)
 
-router.post('/doc-booking/:docId', protect,  bookAppointment )
+
 
 router.get('/appointments',protect, getAllBookings)  
-router.get('/fetch-doc/:id',protect, getOneDoctor)  
+
 router.get('/get-docs', protect, getAllDoctors);
 
 
-router.get('/appointments/:id', protect, getSingleBooking)  
 
 
 
