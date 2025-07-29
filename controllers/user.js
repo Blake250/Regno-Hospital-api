@@ -76,8 +76,8 @@ const registerUser = asyncHandler(async (req, res) => {
         httpOnly: true,
       //  secure: process.env.NODE_ENV !== 'production',
       expires: new Date(Date.now() + 1000 * 86400 * `${TOKEN_EXPIRES_IN_DAYS}` ),
-      secure:true,
-      sameSite: 'none',    
+      // secure:true,
+      // sameSite: 'none',    
         // 1 day
       
    
@@ -156,8 +156,8 @@ const  user = await User.findOne({email:email})
             httpOnly:true,
            // sameSite:'lax',
            expires:new Date(Date.now() + 1000 * 86400 * `${TOKEN_EXPIRES_IN_DAYS}`),
-           secure:true,
-           sameSite: 'none',
+          //  secure:true,
+          //  sameSite: 'none',
            
           
         })    
@@ -598,13 +598,12 @@ const getAllBookings = asyncHandler(async (req, res) => {
   //.populate('docId', 'name user')
 
 
-  if (!bookings || bookings.length === 0) {
-    res.status(404);
-    throw new Error('No Bookings Found');
-  }
-  // if(bookings.paymentMethod  !== 'stripe' || bookings.paymentMethod !== 'paypal' ){ 
-  //   res.status(400);
-  //   throw new Error('Payment Method not found');}
+  // if (!bookings || bookings.length === 0) {
+  //   res.status(404);
+  //   throw new Error('No Bookings Found');
+  //   next();
+  // }
+ 
 
 
   res.status(200).json({
@@ -717,107 +716,107 @@ const updatePaymentMethod = asyncHandler(async (req, res) => {
 
 
 
-// const getAllDoctors = asyncHandler(async (req, res, next) => {
-//   try {
-//     console.log('Fetching doctors for user:', req.user?._id || 'No user');
-    
-//     // Fetch doctors with populated user data
-//     const getDoctors = await docModel
-//       .find({})
-//       .select('-password')
-//       .populate({
-//         path: 'user',
-//         select: 'name email photo role',
-//         model: 'User', // Explicitly specify model to avoid schema issues
-//       })
-//      // .lean();
-
-//     console.log('Raw doctors fetched:', getDoctors.length);
-
-//     // Filter out doctors with invalid or missing user references
-//     const filteredDoctors = getDoctors.filter((doc) => {
-//       if (!doc?.user) {
-//         console.warn('Doctor with missing user data:', doc?._id);
-//         return false;
-//       }
-//       return true;
-//     });
-
-//     if (!filteredDoctors?.length) {
-//       console.log('No valid doctors found');
-//       res.status(404);
-//       throw new Error('No valid doctor data found');
-//     }
-
-//     console.log('Filtered doctors:', filteredDoctors.length);
-//     res.status(200).json({
-//       doctors: filteredDoctors,
-//       message: 'Doctors fetched successfully',
-//     });
-//   } catch (error) {
-//     console.error('getAllDoctors error:', error.message, error.stack);
-//     next(error); // Pass to error middleware
-//   }
-// });
-
-
-
-
-
 const getAllDoctors = asyncHandler(async (req, res, next) => {
   try {
     console.log('Fetching doctors for user:', req.user?._id || 'No user');
-
-    // Validate ObjectIds before querying
-    const doctors = await docModel.find({}).select('-password').lean();
-    console.log('Raw doctors fetched:', doctors.length);
-
-    // Filter out invalid user references
-    const validDoctorIds = [];
-    const invalidDoctors = [];
-    for (const doc of doctors) {
-      if (doc.user && mongoose.Types.ObjectId.isValid(doc.user)) {
-        validDoctorIds.push(doc.user);
-      } else {
-        invalidDoctors.push(doc._id);
-        console.warn('Doctor with invalid or missing user reference:', doc._id);
-      }
-    }
-
-    if (invalidDoctors.length > 0) {
-      console.log('Invalid doctor IDs:', invalidDoctors);
-    }
-
-    // Populate only valid user references
-    const populatedDoctors = await docModel
-      .find({ user: { $in: validDoctorIds } })
+    
+    // Fetch doctors with populated user data
+    const getDoctors = await docModel
+      .find({})
       .select('-password')
+      //.populate('user')
       .populate({
         path: 'user',
         select: 'name email photo role',
-        model: 'User',
-      })
-      .lean();
+        model: 'User', // Explicitly specify model to avoid schema issues
+      }).lean();
 
-    if (!populatedDoctors.length) {
-      console.log('No valid doctors found after population');
+    console.log('Raw doctors fetched:', getDoctors?.length);
+
+    // Filter out doctors with invalid or missing user references
+    const filteredDoctors = getDoctors.filter((doc) => {
+      if (!doc?.user) {
+        console.warn('Doctor with missing user data:', doc?._id);
+        return false;
+      }
+      return true;
+    });
+
+    if (!filteredDoctors?.length) {
+      console.log('No valid doctors found');
       res.status(404);
       throw new Error('No valid doctor data found');
     }
 
-    console.log('Populated doctors:', populatedDoctors.length);
+    console.log('Filtered doctors:', filteredDoctors.length);
     res.status(200).json({
-      doctors: populatedDoctors,
+      doctors: filteredDoctors,
       message: 'Doctors fetched successfully',
     });
   } catch (error) {
     console.error('getAllDoctors error:', error.message, error.stack);
-    res.status(error.status || 500).json({
-      message: error.message || 'Internal Server Error',
-      stack: process.env.NODE_ENV === 'production' ? undefined : error.stack,
-    });
+    next(error); // Pass to error middleware
   }
 });
+
+
+
+
+
+// const getAllDoctors = asyncHandler(async (req, res, next) => {
+//   try {
+//     console.log('Fetching doctors for user:', req.user?._id || 'No user');
+
+//     // Validate ObjectIds before querying
+//     const doctors = await docModel.find({}).select('-password').lean();
+//     console.log('Raw doctors fetched:', doctors.length);
+
+//     // Filter out invalid user references
+//     const validDoctorIds = [];
+//     const invalidDoctors = [];
+//     for (const doc of doctors) {
+//       if (doc.user && mongoose.Types.ObjectId.isValid(doc.user)) {
+//         validDoctorIds.push(doc.user);
+//       } else {
+//         invalidDoctors.push(doc._id);
+//         console.warn('Doctor with invalid or missing user reference:', doc._id);
+//       }
+//     }
+
+//     if (invalidDoctors.length > 0) {
+//       console.log('Invalid doctor IDs:', invalidDoctors);
+//     }
+
+//     // Populate only valid user references
+//     const populatedDoctors = await docModel
+//       .find({ user: { $in: validDoctorIds } })
+//       .select('-password')
+//       .populate({
+//         path: 'user',
+//         select: 'name email photo role',
+//         model: 'User',
+//       })
+//       .lean();
+
+//     if (!populatedDoctors.length) {
+//       console.log('No valid doctors found after population');
+//       res.status(404);
+//       throw new Error('No valid doctor data found');
+//     }
+
+//     console.log('Populated doctors:', populatedDoctors.length);
+//     res.status(200).json({
+//       doctors: populatedDoctors,
+//       message: 'Doctors fetched successfully',
+//     });
+//   } catch (error) {
+//     console.error('getAllDoctors error:', error.message, error.stack);
+//     res.status(error.status || 500).json({
+//       message: error.message || 'Internal Server Error',
+//       stack: process.env.NODE_ENV === 'production' ? undefined : error.stack,
+//     });
+//   }
+// });
 
 
 

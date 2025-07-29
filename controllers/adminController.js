@@ -108,6 +108,20 @@ const addDocPhoto  = asyncHandler(async(req,res)=>{
 
 
 
+// get all doctors registered by admin
+const getAllDocsByAdmin = asyncHandler(async (req, res) => {
+  const doctorList = await docModel.find({}).populate('user', 'name email');
+  console.log(`Fetched ${doctorList.length} doctors from the database.`);
+  if (!doctorList || doctorList?.length === 0) {
+    res.status(404);
+    throw new Error('No doctors found');
+  }
+  res.status(200).json({
+    // success: true,
+    // count: doctorList.length,
+    doctors: doctorList,
+  });
+});
 
 
 
@@ -121,7 +135,8 @@ const appointmentAdmin = asyncHandler(async(req,res)=>{
 
   const appointment = await appointmentModel.find({})
   .populate('userId', 'name email')     // Include user info
-  .populate('docId', 'name email slotDate slotTime fees experience'); 
+  .populate('docId', 'name email')     // Include doctor info 
+ // .populate('docId', 'name email slotDate slotTime fees experience'); 
 
   if(!appointment || appointment.length === 0){ 
       res.status(404)
@@ -130,7 +145,7 @@ const appointmentAdmin = asyncHandler(async(req,res)=>{
       appointment,
       message:"Appointments fetch successfully"
   })
-})
+}) 
 
 
 
@@ -171,7 +186,7 @@ const appointmentCancel = asyncHandler(async (req, res) => {
 
   addDoctor,
   addDocPhoto,
-  //getAllDoctors,
+  getAllDocsByAdmin,
   appointmentCancel
   };
   
