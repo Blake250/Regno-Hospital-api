@@ -29,7 +29,7 @@ const corsOptions = {
     const allowedOrigins = [
     
     
-        // 'https://regno-hospital-app.vercel.app',
+         'https://regno-hospital-app.vercel.app',
 
     ];
    
