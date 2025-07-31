@@ -764,64 +764,6 @@ const getAllDoctors = asyncHandler(async (req, res, next) => {
 
 
 
-// const getAllDoctors = asyncHandler(async (req, res, next) => {
-//   try {
-//     console.log('Fetching doctors for user:', req.user?._id || 'No user');
-
-//     // Validate ObjectIds before querying
-//     const doctors = await docModel.find({}).select('-password').lean();
-//     console.log('Raw doctors fetched:', doctors.length);
-
-//     // Filter out invalid user references
-//     const validDoctorIds = [];
-//     const invalidDoctors = [];
-//     for (const doc of doctors) {
-//       if (doc.user && mongoose.Types.ObjectId.isValid(doc.user)) {
-//         validDoctorIds.push(doc.user);
-//       } else {
-//         invalidDoctors.push(doc._id);
-//         console.warn('Doctor with invalid or missing user reference:', doc._id);
-//       }
-//     }
-
-//     if (invalidDoctors.length > 0) {
-//       console.log('Invalid doctor IDs:', invalidDoctors);
-//     }
-
-//     // Populate only valid user references
-//     const populatedDoctors = await docModel
-//       .find({ user: { $in: validDoctorIds } })
-//       .select('-password')
-//       .populate({
-//         path: 'user',
-//         select: 'name email photo role',
-//         model: 'User',
-//       })
-//       .lean();
-
-//     if (!populatedDoctors.length) {
-//       console.log('No valid doctors found after population');
-//       res.status(404);
-//       throw new Error('No valid doctor data found');
-//     }
-
-//     console.log('Populated doctors:', populatedDoctors.length);
-//     res.status(200).json({
-//       doctors: populatedDoctors,
-//       message: 'Doctors fetched successfully',
-//     });
-//   } catch (error) {
-//     console.error('getAllDoctors error:', error.message, error.stack);
-//     res.status(error.status || 500).json({
-//       message: error.message || 'Internal Server Error',
-//       stack: process.env.NODE_ENV === 'production' ? undefined : error.stack,
-//     });
-//   }
-// });
-
-
-
-
 
 
 

@@ -53,7 +53,6 @@ router.patch('/cancel-doc', protect,  cancelAppointment  )
 
 router.patch('/:appointmentId/payment-method', protect, updatePaymentMethod);
 
-//router.get('/get-docs', protect, getAllDoctors);
 
 
 
