@@ -27,15 +27,14 @@ app.use(cookieParser());
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
-    // 'https://regno-hospital-app.vercel.app', 
-   
-      //  'http://localhost:5173' ,
-   'https://regno-hospital-app.netlify.app',
-    //  'https://regno-hospital-api.onrender.com',
-      
-   
-   
+      'https://regno-hospital-app.vercel.app',
+      // 'http://localhost:5173',
+      // 'https://regno-hospital-app.netlify.app',
+      // 'https://regno-hospital-api.onrender.com',
     ];
+   
+   
+    
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -52,15 +51,10 @@ const corsOptions = {
 
 
 
+
 // Apply CORS middleware globally
 app.use(cors(corsOptions));
 
-// Set Content-Type for all JSON responses globally (optional, if needed)
-// Uncomment if you want to enforce JSON content-type for all responses
-// app.use((req, res, next) => {
-//   res.setHeader('Content-Type', 'application/json;charset=utf-8');
-//   next();
-// });
 
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URL)
