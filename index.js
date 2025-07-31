@@ -28,8 +28,9 @@ const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
     
-       'https://regno-hospital-app.netlify.app',
- 
+    
+        // 'https://regno-hospital-app.vercel.app',
+
     ];
    
    
