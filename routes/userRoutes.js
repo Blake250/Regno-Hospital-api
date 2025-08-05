@@ -32,22 +32,16 @@ router.post('/doc-booking/:docId', protect,  bookAppointment )
 router.post('/register', registerUser)
 router.post('/login', loginUser)
 router.get('/logout', logoutUser )
-router.get('/getUser',protect, getUser )
+router.get('/get-user',protect, getUser )
 router.get('/get-status', getLoginStatus)
 
 
 router.patch('/update-user', protect,updateUser)
 router.patch('/update-photo', protect, updatePhoto)
 
-
-
 router.get('/appointments',protect, getAllBookings)  
 
 router.get('/get-docs', protect, getAllDoctors);
-
-
-
-
 
 router.patch('/cancel-doc', protect,  cancelAppointment  )
 

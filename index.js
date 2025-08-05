@@ -19,6 +19,9 @@ const app = express();
 // Stripe webhook raw body (must be before express.json())
 app.use('/api/webhook', express.raw({ type: 'application/json' }), stripeWebhook);
 
+
+
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -27,9 +30,9 @@ app.use(cookieParser());
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
+    'http://localhost:5173'
     
-    
-         'https://regno-hospital-app.vercel.app',
+        //  'https://regno-hospital-app.vercel.app',
 
     ];
    

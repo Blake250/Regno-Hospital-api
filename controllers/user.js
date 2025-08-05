@@ -57,7 +57,7 @@ const registerUser = asyncHandler(async (req, res) => {
         name,
         email,
         password,
-        role : userRole
+        role :userRole, // Set the role to 'customer' or 'admin'
 
     });
     console.log(`this is the user: ${user.role} for this user `)
@@ -162,7 +162,16 @@ const  user = await User.findOne({email:email})
           
         })    
         
-        res.status(201).json({user})
+        res.status(201).json({user  
+          :{
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+        },
+        message:'login successful',
+        token:token
+    })
 
     }else{
         res.status(400)
@@ -346,7 +355,7 @@ const bookAppointment = asyncHandler(async (req, res) => {
         throw new Error('Invalid doctor ID')
 
     }
-
+   console.log( `the docId is ${docId}`)
 
   
    if (!mongoose.Types.ObjectId.isValid(docId)) {
@@ -354,7 +363,7 @@ const bookAppointment = asyncHandler(async (req, res) => {
     throw new Error('Invalid doc ID format');
   }
         let docData;
-     docData = await docModel.findById(docId).select(`-password`).populate('user', 'name email');  
+     docData = await docModel.findById(docId).populate('user', 'name email');  
      console.log(`The doctor data is ${docData}`)
     if (!docData?.available) {
         res.status(404);
@@ -376,7 +385,7 @@ const bookAppointment = asyncHandler(async (req, res) => {
 
     slot_booked[slotDate] = [...(slot_booked[slotDate] || []), slotTime];
 
-     docData = await docModel.findByIdAndUpdate(docId, { slot_booked: slot_booked }, {new:true} ).populate('user', 'email, name')
+     docData = await docModel.findByIdAndUpdate(docId, { slot_booked: slot_booked }, {new:true} ).populate('user', 'email name')
     //  .populate({
     //   path:'user',
     //   populate:{
@@ -393,7 +402,7 @@ const bookAppointment = asyncHandler(async (req, res) => {
       throw new Error('Failed to update doctor with new slot');
     }
      
-    const deletedBooking =  delete docData.slot_booked
+  //  const deletedBooking =  delete docData.slot_booked
 
 //console.log(`This booking with Id number ${deletedBooking} has been deleted`)
 
@@ -459,7 +468,7 @@ const cancelAppointment = asyncHandler(async (req, res) => {
         appointmentId, 
         { cancelled: true },  
         { new: true } ,
-        {runValidators: true }    );
+        {runValidators: true } );
 
     if (!getBooking) {
         res.status(400);
@@ -652,7 +661,7 @@ const getOneDoctor = asyncHandler(async(req,res)=>{
 const updatePaymentMethod = asyncHandler(async (req, res) => {
   console.log("Raw body:", req.body);
 
-  const { appointmentId } = req.params;
+  const { appointmentId } = req.params 
   const paymentMethod = req.body?.paymentMethod?.trim()?.toLowerCase();
 //   const paymentMethodRaw = req.body?.paymentMethod;
 // const paymentMethod = typeof paymentMethodRaw === 'string' ? paymentMethodRaw.trim().toLowerCase() : null;
@@ -687,12 +696,13 @@ const updatePaymentMethod = asyncHandler(async (req, res) => {
     { new: true }
   )
     .populate('userId', 'name email')
+    //.populate('docId', 'name email ' )
     .populate({
       path: 'docId',
       populate: {
         path: 'user',
         model: 'User',
-        select: 'name email photo'
+        select: 'name email '
       }
     });
 
@@ -716,6 +726,7 @@ const updatePaymentMethod = asyncHandler(async (req, res) => {
 
 
 
+
 const getAllDoctors = asyncHandler(async (req, res, next) => {
   try {
     console.log('Fetching doctors for user:', req.user?._id || 'No user');
@@ -730,12 +741,12 @@ const getAllDoctors = asyncHandler(async (req, res, next) => {
         select: 'name email photo role',
         model: 'User', // Explicitly specify model to avoid schema issues
       })
-      //.lean();
+      .lean()
 
     console.log('Raw doctors fetched:', getDoctors?.length);
 
     // Filter out doctors with invalid or missing user references
-    const filteredDoctors = getDoctors.filter((doc) => {
+    const filteredDoctors = getAllDoctors && getDoctors?.filter((doc) => {
       if (!doc?.user) {
         console.warn('Doctor with missing user data:', doc?._id);
         return false;
@@ -749,7 +760,7 @@ const getAllDoctors = asyncHandler(async (req, res, next) => {
       throw new Error('No valid doctor data found');
     }
 
-    console.log('Filtered doctors:', filteredDoctors.length);
+    console.log('Filtered doctors:', filteredDoctors?.length);
     res.status(200).json({
       doctors: filteredDoctors,
       message: 'Doctors fetched successfully',
@@ -759,6 +770,9 @@ const getAllDoctors = asyncHandler(async (req, res, next) => {
     next(error); // Pass to error middleware
   }
 });
+
+
+
 
 
 
