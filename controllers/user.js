@@ -428,7 +428,7 @@ const bookAppointment = asyncHandler(async (req, res) => {
     }
 
     const subject = 'new order successfully  booked on Regno hospital'
-  const  send_to =  'ozoekwecelestine@gmail.com'
+  const  send_to =  userData.email || 'ozoekwecelestine@gmail.com'
  //  const template = appointmentSuccessEmail(userData?.name, slotDate,slotTime )
  const template = appointmentSuccessEmail(userData?.name, newAppointment);
 
