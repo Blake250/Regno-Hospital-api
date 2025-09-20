@@ -300,30 +300,46 @@ const updateUser = asyncHandler(async(req,res)=>{
 
 
 
+const updatePhoto = asyncHandler(async(req,res)=>{  
+    const user  = await User.findById(req.user._id) 
+    if(!user){
+      res.status(400)
+      throw new Error('User Not Found')
+    }     
+    if(user){
+
+
+        user.photo = req.body.photo || user.photo 
+        const updatedPhoto = await user.save()  
+        res.status(200).json(updatedPhoto)  
+    }else{      
+        res.status(400)
+        throw new Error('User Photo not updated')
+    }
+})
 
 
 
+// const updatePhoto = asyncHandler(async (req, res) => {
+//   const { photo } = req.body;
 
-const updatePhoto = asyncHandler(async (req, res) => {
-  const { photo } = req.body;
+//   if (!photo) {
+//     return res.status(400).json({ message: 'No Photo Found' });
+//   }
 
-  if (!photo) {
-    return res.status(400).json({ message: 'No Photo Found' });
-  }
+//   const user = await User.findById(req.user._id);
+//   if (!user) {
+//     return res.status(404).json({ message: 'User not found' });
+//   }
 
-  const user = await User.findById(req.user._id);
-  if (!user) {
-    return res.status(404).json({ message: 'User not found' });
-  }
+//   user.photo = photo;
+//   const updatedUser = await user.save();
 
-  user.photo = photo;
-  const updatedUser = await user.save();
-
-  res.status(200).json({
-    message: "Photo updated successfully",
-    photo: updatedUser.photo,
-  });
-});
+//   res.status(200).json({
+//     message: "Photo updated successfully",
+//     photo: updatedUser.photo,
+//   });
+// });
 
 
 
