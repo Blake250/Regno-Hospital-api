@@ -32,7 +32,7 @@ router.post('/doc-booking/:docId', protect,  bookAppointment )
 router.post('/register', registerUser)
 router.post('/login', loginUser)
 router.get('/logout', logoutUser )
-router.get('/get-user', getUser )
+router.get('/get-user',protect, getUser )
 router.get('/get-status', getLoginStatus)
 
 
