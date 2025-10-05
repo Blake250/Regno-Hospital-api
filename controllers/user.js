@@ -774,13 +774,13 @@ const getAllDoctors = asyncHandler(async (req, res, next) => {
     const getDoctors = await docModel
       .find({})
       .select('-password')
-      //.populate('user')
-      .populate({
-        path: 'user',
-        select: 'name email photo role',
-        model: 'User', // Explicitly specify model to avoid schema issues
-      })
-      .lean()
+      .populate('user', 'name email photo role')
+      // .populate({
+      //   path: 'user',
+      //   select: 'name email photo role',
+      //   model: 'User', // Explicitly specify model to avoid schema issues
+      // })
+      // .lean()
 
     console.log('Raw doctors fetched:', getDoctors?.length);
 
