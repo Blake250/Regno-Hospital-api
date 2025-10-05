@@ -202,39 +202,41 @@ const logoutUser = asyncHandler(async(req, res)=>{
 
 
 
-// // Get user details
-// const getUser = asyncHandler(async (req, res) => {
-//   const user = await User.findById(req.user._id);
- 
-//   if (user) {
-//     res.status(201).json(user);
-//   } else {
-//     res.status(400);
-//     throw new Error("User not found...");
-//   }
-// });
-
-
+// Get user details
 const getUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
  
   if (user) {
     res.status(201).json({
-      user:{
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        photo: user.photo,
-        phone: user.phone,
-        
-      }
+        user:user
     });
   } else {
     res.status(400);
     throw new Error("User not found...");
   }
 });
+
+
+// const getUser = asyncHandler(async (req, res) => {
+//   const user = await User.findById(req.user._id);
+ 
+//   if (user) {
+//     res.status(201).json({
+//       user:{
+//         id: user._id,
+//         name: user.name,
+//         email: user.email,
+//         role: user.role,
+//         photo: user.photo,
+//         phone: user.phone,
+        
+//       }
+//     });
+//   } else {
+//     res.status(400);
+//     throw new Error("User not found...");
+//   }
+// });
 
 
 
