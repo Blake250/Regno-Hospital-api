@@ -30,7 +30,7 @@ app.use(cookieParser());
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
-    // 'http://localhost:5173'
+  
     
           'https://regno-hospital-app.vercel.app',
 
