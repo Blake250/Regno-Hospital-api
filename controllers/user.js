@@ -76,8 +76,8 @@ const registerUser = asyncHandler(async (req, res) => {
         httpOnly: true,
       //  secure: process.env.NODE_ENV !== 'production',
       expires: new Date(Date.now() + 1000 * 86400 * `${TOKEN_EXPIRES_IN_DAYS}` ),
-      secure:true,
-      sameSite: 'none',    
+      secure: process.env.NODE_ENV === 'production', // secure only in production
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',  
         // 1 day
       
    
@@ -125,9 +125,7 @@ const {email, password, role} = req.body
     
     // ensure the user exist in the DB
 const  user = await User.findOne({email:email})
-// console.log('→ login attempt for:', user?.email);
-// console.log('   stored hash:', user?.password);
-// console.log('   incoming pw:', password);
+
 
     // throw an error if a user doesn't exist
     if(!user){
@@ -156,8 +154,8 @@ const  user = await User.findOne({email:email})
             httpOnly:true,
            // sameSite:'lax',
            expires:new Date(Date.now() + 1000 * 86400 * `${TOKEN_EXPIRES_IN_DAYS}`),
-           secure:true,
-           sameSite: 'none',
+              secure: process.env.NODE_ENV === 'production', // secure only in production
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',  
            
           
         })    
