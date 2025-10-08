@@ -33,7 +33,7 @@ const corsOptions = {
   
     
           'https://regno-hospital-app.vercel.app',
-         'https://regno-hospital-api.onrender.com'
+         // 'https://regno-hospital-api.onrender.com'
     
 
     ];
