@@ -41,7 +41,7 @@ router.patch('/update-photo', protect, updatePhoto)
 
 router.get('/appointments',protect, getAllBookings)  
 
-router.get('/get-docs',  getAllDoctors);
+router.get('/get-docs',protect,  getAllDoctors);
 
 router.patch('/cancel-doc', protect,  cancelAppointment  )
 
