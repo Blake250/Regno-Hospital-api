@@ -22,7 +22,7 @@ const TOKEN_EXPIRES_IN_DAYS = 30; // how many days the token and cookie last
 
 
 const generateToken = (id)=>{
-return   jwt.sign({id:id}, process.env.SECRET_KEY, {expiresIn : `${TOKEN_EXPIRES_IN_DAYS}d`})  
+return   jwt.sign({id:id}, process.env.SECRET_KEY, {expiresIn : TOKEN_EXPIRES_IN_DAYS } )  
 }
 
 
@@ -74,7 +74,7 @@ const registerUser = asyncHandler(async (req, res) => {
     res.cookie('token', token, {
         path: '/',
         httpOnly: true,
-      expires: new Date(Date.now() + 1000 * 86400 * `${TOKEN_EXPIRES_IN_DAYS}` ),
+      expires: new Date(Date.now() + 1000 * 86400 * TOKEN_EXPIRES_IN_DAYS ),
        secure:true,
        sameSite: 'none', 
    
@@ -151,7 +151,7 @@ const  user = await User.findOne({email:email})
         res.cookie('token', token,{
             path:'/',
             httpOnly:true,
-           expires:new Date(Date.now() + 1000 * 86400 * `${TOKEN_EXPIRES_IN_DAYS}`) 
+           expires:new Date(Date.now() + 1000 * 86400 * TOKEN_EXPIRES_IN_DAYS), 
            secure:true,
            sameSite: 'none',
            
