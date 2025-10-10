@@ -33,7 +33,7 @@ const corsOptions = {
   
     
           'https://regno-hospital-app.vercel.app',
-         // 'https://regno-hospital-api.onrender.com'
+         
     
 
     ];
@@ -50,7 +50,7 @@ const corsOptions = {
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization'],
   allowedMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  maxAge: 1800, // 30 minutes, matching Access-Control-Max-Age
+
   
 };
 
