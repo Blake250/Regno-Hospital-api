@@ -57,7 +57,7 @@ const registerUser = asyncHandler(async (req, res) => {
         name,
         email,
         password,
-        role :userRole, // Set the role to 'customer' or 'admin'
+        role :userRole, 
 
     });
     console.log(`this is the user: ${user.role} for this user `)
@@ -74,7 +74,6 @@ const registerUser = asyncHandler(async (req, res) => {
     res.cookie('token', token, {
         path: '/',
         httpOnly: true,
-      //  secure: process.env.NODE_ENV !== 'production',
       expires: new Date(Date.now() + 1000 * 86400 * `${TOKEN_EXPIRES_IN_DAYS}` ),
        secure:true,
        sameSite: 'none', 
@@ -152,11 +151,8 @@ const  user = await User.findOne({email:email})
         res.cookie('token', token,{
             path:'/',
             httpOnly:true,
-           // sameSite:'lax',
-           expires:new Date(Date.now() + 1000 * 86400 * `${TOKEN_EXPIRES_IN_DAYS}`),
-         
-       
-              secure:true,
+           expires:new Date(Date.now() + 1000 * 86400 * `${TOKEN_EXPIRES_IN_DAYS}`) 
+           secure:true,
            sameSite: 'none',
            
           
