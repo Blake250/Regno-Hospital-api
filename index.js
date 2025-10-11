@@ -32,7 +32,10 @@ const corsOptions = {
     const allowedOrigins = [
     // 'http://localhost:5173'
     
-          'https://regno-hospital-app.vercel.app',
+     'https://regno-hospital-app.vercel.app',
+      'https://regno-hospital-api.onrender.com'
+
+
 
     ];
    
@@ -60,7 +63,7 @@ app.use(cors(corsOptions));
 
 
 // MongoDB connection
-mongoose.connect(process.env.MONGODB_URL)
+mongoose.connect(process.env.MONGO_URL )
   .then(() => console.log('MongoDB connected'))
   .catch((err) => console.error('MongoDB connection error:', err));
 

@@ -57,7 +57,7 @@ const registerUser = asyncHandler(async (req, res) => {
         name,
         email,
         password,
-        role :userRole, // Set the role to 'customer' or 'admin'
+        role  
 
     });
     console.log(`this is the user: ${user.role} for this user `)
@@ -74,8 +74,8 @@ const registerUser = asyncHandler(async (req, res) => {
     res.cookie('token', token, {
         path: '/',
         httpOnly: true,
-      //  secure: process.env.NODE_ENV !== 'production',
-      expires: new Date(Date.now() + 1000 * 86400 * `${TOKEN_EXPIRES_IN_DAYS}` ),
+      
+      expires: new Date(Date.now() + 1000 * 86400  ),
       secure:true,
       sameSite: 'none',    
         // 1 day
@@ -125,9 +125,7 @@ const {email, password, role} = req.body
     
     // ensure the user exist in the DB
 const  user = await User.findOne({email:email})
-// console.log('→ login attempt for:', user?.email);
-// console.log('   stored hash:', user?.password);
-// console.log('   incoming pw:', password);
+
 
     // throw an error if a user doesn't exist
     if(!user){
@@ -155,7 +153,7 @@ const  user = await User.findOne({email:email})
             path:'/',
             httpOnly:true,
            // sameSite:'lax',
-           expires:new Date(Date.now() + 1000 * 86400 * `${TOKEN_EXPIRES_IN_DAYS}`),
+           expires:new Date(Date.now() + 1000 * 86400 ),
            secure:true,
            sameSite: 'none',
            
@@ -202,10 +200,33 @@ const logoutUser = asyncHandler(async(req, res)=>{
 
 
 
-// Get user details
-const getUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
+// // Get user details
+// const getUser = asyncHandler(async (req, res) => {
+//   const user = await User.findById(req.user._id);
  
+//   if (user) {
+//     res.status(201).json({
+//       user:{
+//         id: user._id,
+//         name: user.name,
+//         email: user.email,
+//         role: user.role,
+//         photo: user.photo,
+//         phone: user.phone,
+
+//       }
+//     });
+//   } else {
+//     res.status(400);
+//     throw new Error("User not found...");
+//   }
+// });
+
+const getUser = asyncHandler(async (req, res) => {
+
+
+  const user = await User.findById(req.user._id).select('-password');
+
   if (user) {
     res.status(201).json(user);
   } else {
@@ -219,10 +240,9 @@ const getUser = asyncHandler(async (req, res) => {
 
 
 
-
-
 const getLoginStatus = asyncHandler(async (req, res) => {
     console.log("Cookies in /get-status route:", req.cookies);
+
 
   // console.log(req.cookies)
     const token = req.cookies ? req.cookies.token : '';
@@ -304,28 +324,23 @@ const updateUser = asyncHandler(async(req,res)=>{
 
 
 
-const updatePhoto = asyncHandler(async (req, res) => {
-  const { photo } = req.body;
-
-  if (!photo) {
-    return res.status(400).json({ message: 'No Photo Found' });
-  }
-
-  const user = await User.findById(req.user._id);
-  if (!user) {
-    return res.status(404).json({ message: 'User not found' });
-  }
-
-  user.photo = photo;
-  const updatedUser = await user.save();
-
-  res.status(200).json({
-    message: "Photo updated successfully",
-    photo: updatedUser.photo,
-  });
-});
+const updatePhoto = asyncHandler(async(req,res)=>{  
+    const user  = await User.findById(req.user._id) 
+    if(!user){
+      res.status(400)
+      throw new Error('User Not Found')
+    }     
+    if(user){
 
 
+        user.photo = req.body.photo || user.photo 
+        const updatedPhoto = await user.save()  
+        res.status(200).json(updatedPhoto)  
+    }else{      
+        res.status(400)
+        throw new Error('User Photo not updated')
+    }
+})
 
   
 
@@ -735,13 +750,14 @@ const getAllDoctors = asyncHandler(async (req, res, next) => {
     const getDoctors = await docModel
       .find({})
       .select('-password')
+      .populate('user', 'name email photo role')
       //.populate('user')
-      .populate({
-        path: 'user',
-        select: 'name email photo role',
-        model: 'User', // Explicitly specify model to avoid schema issues
-      })
-      .lean()
+      // .populate({
+      //   path: 'user',
+      //   select: 'name email photo role',
+      //   model: 'User', // Explicitly specify model to avoid schema issues
+      // })
+      // .lean()
 
     console.log('Raw doctors fetched:', getDoctors?.length);
 
