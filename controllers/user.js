@@ -78,21 +78,13 @@ const registerUser = asyncHandler(async (req, res) => {
     res.cookie('token', token, {
         path: '/',
         httpOnly: true,
-<<<<<<< HEAD
       
       expires: new Date(Date.now() + 1000 * 86400  ),
       secure:true,
       sameSite: 'none',    
-        // 1 day
+     
       
    
-=======
-      expires: new Date(Date.now() + 1000 * 86400 ),
-       secure:true,
-       sameSite: 'none', 
-  
-
->>>>>>> 523d5a798bc63b67b3147ff907c1a962ff16269e
     })
 
     // Send response
@@ -164,15 +156,10 @@ const  user = await User.findOne({email:email})
         res.cookie('token', token,{
             path:'/',
             httpOnly:true,
-<<<<<<< HEAD
-           // sameSite:'lax',
+  
            expires:new Date(Date.now() + 1000 * 86400 ),
-=======
-           expires:new Date(Date.now() + 1000 * 86400 ), 
->>>>>>> 523d5a798bc63b67b3147ff907c1a962ff16269e
            secure:true,
            sameSite: 'none',
-          
            
           
         })    
@@ -216,38 +203,13 @@ const logoutUser = asyncHandler(async(req, res)=>{
 
 
 
-
-// // Get user details
-// const getUser = asyncHandler(async (req, res) => {
-//   const user = await User.findById(req.user._id);
- 
-//   if (user) {
-//     res.status(201).json({
-//       user:{
-//         id: user._id,
-//         name: user.name,
-//         email: user.email,
-//         role: user.role,
-//         photo: user.photo,
-//         phone: user.phone,
-
-//       }
-//     });
-//   } else {
-//     res.status(400);
-//     throw new Error("User not found...");
-//   }
-// });
-
 const getUser = asyncHandler(async (req, res) => {
 
 
   const user = await User.findById(req.user._id).select('-password');
 
   if (user) {
-    res.status(201).json({
-        user:user
-    });
+    res.status(201).json(user);
   } else {
     res.status(400);
     throw new Error("User not found...");
@@ -267,13 +229,7 @@ const getLoginStatus = asyncHandler(async (req, res) => {
     const token = req.cookies ? req.cookies.token : '';
  //console.log(`it looks like this ${token}`)
   
-    // if (!token ) {
-    //   return res.status(401).json({
-    //     isLoggedIn: false,
-    //     message: 'No Token Provided',
-    //   });
-    // }
-  
+    
     if (!token) {
       return res.json(false);
     }
@@ -291,7 +247,8 @@ const getLoginStatus = asyncHandler(async (req, res) => {
       });
    
     } catch (error) {
-        console.log('JWT verification failed:', error.message)
+      console.error('JWT verification error:', error.message);
+
       return res.status(401).json({
         loggedIn: false,
         message:error.message
@@ -339,6 +296,10 @@ const updateUser = asyncHandler(async(req,res)=>{
 
 
 
+
+
+
+
 const updatePhoto = asyncHandler(async(req,res)=>{  
     const user  = await User.findById(req.user._id) 
     if(!user){
@@ -346,49 +307,6 @@ const updatePhoto = asyncHandler(async(req,res)=>{
       throw new Error('User Not Found')
     }     
     if(user){
-
-
-        user.photo = req.body.photo || user.photo 
-        const updatedPhoto = await user.save()  
-        res.status(200).json(updatedPhoto)  
-    }else{      
-        res.status(400)
-        throw new Error('User Photo not updated')
-    }
-})
-
-
-
-// const updatePhoto = asyncHandler(async (req, res) => {
-//   const { photo } = req.body;
-
-<<<<<<< HEAD
-const updatePhoto = asyncHandler(async(req,res)=>{  
-    const user  = await User.findById(req.user._id) 
-    if(!user){
-      res.status(400)
-      throw new Error('User Not Found')
-    }     
-    if(user){
-=======
-//   if (!photo) {
-//     return res.status(400).json({ message: 'No Photo Found' });
-//   }
-
-//   const user = await User.findById(req.user._id);
-//   if (!user) {
-//     return res.status(404).json({ message: 'User not found' });
-//   }
-
-//   user.photo = photo;
-//   const updatedUser = await user.save();
-
-//   res.status(200).json({
-//     message: "Photo updated successfully",
-//     photo: updatedUser.photo,
-//   });
-// });
->>>>>>> 523d5a798bc63b67b3147ff907c1a962ff16269e
 
 
         user.photo = req.body.photo || user.photo 
@@ -475,9 +393,7 @@ const bookAppointment = asyncHandler(async (req, res) => {
       throw new Error('Failed to update doctor with new slot');
     }
      
-  //  const deletedBooking =  delete docData.slot_booked
-
-//console.log(`This booking with Id number ${deletedBooking} has been deleted`)
+ 
 
     const appointmentData = {
         userId,
@@ -809,10 +725,7 @@ const getAllDoctors = asyncHandler(async (req, res, next) => {
       .find({})
       .select('-password')
       .populate('user', 'name email photo role')
-<<<<<<< HEAD
       //.populate('user')
-=======
->>>>>>> 523d5a798bc63b67b3147ff907c1a962ff16269e
       // .populate({
       //   path: 'user',
       //   select: 'name email photo role',
