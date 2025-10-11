@@ -17,12 +17,12 @@ const sendEmail = require('../util/sendEmail')
 
 dotenv.config() 
 
-const TOKEN_EXPIRES_IN_DAYS = 30; // how many days the token and cookie last
+
 
 
 
 const generateToken = (id)=>{
-return   jwt.sign({id:id}, process.env.SECRET_KEY, {expiresIn : `${TOKEN_EXPIRES_IN_DAYS}d`})  
+return   jwt.sign({id:id}, process.env.SECRET_KEY, {expiresIn : '1d' } )  
 }
 
 
@@ -57,7 +57,11 @@ const registerUser = asyncHandler(async (req, res) => {
         name,
         email,
         password,
+<<<<<<< HEAD
         role  
+=======
+        role :userRole, 
+>>>>>>> 523d5a798bc63b67b3147ff907c1a962ff16269e
 
     });
     console.log(`this is the user: ${user.role} for this user `)
@@ -74,6 +78,7 @@ const registerUser = asyncHandler(async (req, res) => {
     res.cookie('token', token, {
         path: '/',
         httpOnly: true,
+<<<<<<< HEAD
       
       expires: new Date(Date.now() + 1000 * 86400  ),
       secure:true,
@@ -81,6 +86,13 @@ const registerUser = asyncHandler(async (req, res) => {
         // 1 day
       
    
+=======
+      expires: new Date(Date.now() + 1000 * 86400 ),
+       secure:true,
+       sameSite: 'none', 
+  
+
+>>>>>>> 523d5a798bc63b67b3147ff907c1a962ff16269e
     })
 
     // Send response
@@ -152,10 +164,15 @@ const  user = await User.findOne({email:email})
         res.cookie('token', token,{
             path:'/',
             httpOnly:true,
+<<<<<<< HEAD
            // sameSite:'lax',
            expires:new Date(Date.now() + 1000 * 86400 ),
+=======
+           expires:new Date(Date.now() + 1000 * 86400 ), 
+>>>>>>> 523d5a798bc63b67b3147ff907c1a962ff16269e
            secure:true,
            sameSite: 'none',
+          
            
           
         })    
@@ -228,7 +245,9 @@ const getUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id).select('-password');
 
   if (user) {
-    res.status(201).json(user);
+    res.status(201).json({
+        user:user
+    });
   } else {
     res.status(400);
     throw new Error("User not found...");
@@ -320,10 +339,6 @@ const updateUser = asyncHandler(async(req,res)=>{
 
 
 
-
-
-
-
 const updatePhoto = asyncHandler(async(req,res)=>{  
     const user  = await User.findById(req.user._id) 
     if(!user){
@@ -331,6 +346,49 @@ const updatePhoto = asyncHandler(async(req,res)=>{
       throw new Error('User Not Found')
     }     
     if(user){
+
+
+        user.photo = req.body.photo || user.photo 
+        const updatedPhoto = await user.save()  
+        res.status(200).json(updatedPhoto)  
+    }else{      
+        res.status(400)
+        throw new Error('User Photo not updated')
+    }
+})
+
+
+
+// const updatePhoto = asyncHandler(async (req, res) => {
+//   const { photo } = req.body;
+
+<<<<<<< HEAD
+const updatePhoto = asyncHandler(async(req,res)=>{  
+    const user  = await User.findById(req.user._id) 
+    if(!user){
+      res.status(400)
+      throw new Error('User Not Found')
+    }     
+    if(user){
+=======
+//   if (!photo) {
+//     return res.status(400).json({ message: 'No Photo Found' });
+//   }
+
+//   const user = await User.findById(req.user._id);
+//   if (!user) {
+//     return res.status(404).json({ message: 'User not found' });
+//   }
+
+//   user.photo = photo;
+//   const updatedUser = await user.save();
+
+//   res.status(200).json({
+//     message: "Photo updated successfully",
+//     photo: updatedUser.photo,
+//   });
+// });
+>>>>>>> 523d5a798bc63b67b3147ff907c1a962ff16269e
 
 
         user.photo = req.body.photo || user.photo 
@@ -751,7 +809,10 @@ const getAllDoctors = asyncHandler(async (req, res, next) => {
       .find({})
       .select('-password')
       .populate('user', 'name email photo role')
+<<<<<<< HEAD
       //.populate('user')
+=======
+>>>>>>> 523d5a798bc63b67b3147ff907c1a962ff16269e
       // .populate({
       //   path: 'user',
       //   select: 'name email photo role',

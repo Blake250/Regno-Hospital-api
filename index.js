@@ -30,12 +30,21 @@ app.use(cookieParser());
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
-    // 'http://localhost:5173'
+  
     
+<<<<<<< HEAD
      'https://regno-hospital-app.vercel.app',
       'https://regno-hospital-api.onrender.com'
 
 
+=======
+          'https://regno-hospital-app.vercel.app',
+          'https://regno-hospital-api.onrender.com'
+        
+      
+         
+    
+>>>>>>> 523d5a798bc63b67b3147ff907c1a962ff16269e
 
     ];
    
@@ -51,7 +60,8 @@ const corsOptions = {
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization'],
   allowedMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  maxAge: 1800, // 30 minutes, matching Access-Control-Max-Age
+  maxAge: 1000 * 60 * 60 * 24 * 7
+
   
 };
 
