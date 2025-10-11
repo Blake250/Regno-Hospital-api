@@ -77,7 +77,7 @@ const registerUser = asyncHandler(async (req, res) => {
       expires: new Date(Date.now() + 1000 * 86400 ),
        secure:true,
        sameSite: 'none', 
-        domain:  'regno-hospital-app.vercel.app'
+  
 
     })
 
@@ -153,7 +153,7 @@ const  user = await User.findOne({email:email})
            expires:new Date(Date.now() + 1000 * 86400 ), 
            secure:true,
            sameSite: 'none',
-           domain:  'regno-hospital-app.vercel.app'
+          
            
           
         })    
