@@ -29,7 +29,7 @@ return   jwt.sign({id:id}, process.env.SECRET_KEY, {expiresIn : '1d' } )
 const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password ,role } = req.body;
 
-    const userRole = role || 'customer'; // Default to 'customer' if no role is provided
+    const userRole = role || 'customer'; // Default to 'admin' if no role is provided
     // const { speciality, degree, experience, about, photo, fees, address, available
 
     // Validate inputs
@@ -57,11 +57,8 @@ const registerUser = asyncHandler(async (req, res) => {
         name,
         email,
         password,
-<<<<<<< HEAD
-        role  
-=======
-        role :userRole, 
->>>>>>> 523d5a798bc63b67b3147ff907c1a962ff16269e
+
+        role  : userRole
 
     });
     console.log(`this is the user: ${user.role} for this user `)
@@ -209,7 +206,7 @@ const getUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id).select('-password');
 
   if (user) {
-    res.status(201).json(user);
+    res.status(201).json(user)
   } else {
     res.status(400);
     throw new Error("User not found...");
@@ -221,41 +218,41 @@ const getUser = asyncHandler(async (req, res) => {
 
 
 
+
+
 const getLoginStatus = asyncHandler(async (req, res) => {
-    console.log("Cookies in /get-status route:", req.cookies);
+  console.log("Cookies in /get-status route:", req.cookies);
 
+  const token = req.cookies?.token || '';
 
-  // console.log(req.cookies)
-    const token = req.cookies ? req.cookies.token : '';
- //console.log(`it looks like this ${token}`)
+  if (!token) {
+    // Return loggedIn false instead of just false
+    return res.status(200).json({
+      isLoggedIn: false,
+      message: 'User not logged in',
+    });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+
+    res.status(200).json({
+      isLoggedIn: true,
+      message: 'User is logged in',
+      user: decoded,
+    });
+  } catch (error) {
+    console.error('JWT verification error:', error.message);
+
+    return res.status(200).json({  // <-- Always 200
+      isLoggedIn: false,
+      message: 'Invalid token',
+    });
+  }
+});
+
   
-    
-    if (!token) {
-      return res.json(false);
-    }
 
-
-    try {
-      const decoded = jwt.verify(token, process.env.SECRET_KEY);
-   //  console.log(`the ${JSON.stringify(decoded )} was successful`)
-  
-//return
-     res.status(200).json({
-        isLoggedIn: true,
-        message: 'User is Logged In',
-        user: decoded,
-      });
-   
-    } catch (error) {
-      console.error('JWT verification error:', error.message);
-
-      return res.status(401).json({
-        loggedIn: false,
-        message:error.message
-      });
-    }
-  });
-  
 
 // updating the user's data
 const updateUser = asyncHandler(async(req,res)=>{
