@@ -1,5 +1,7 @@
 
 
+
+
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
@@ -30,21 +32,12 @@ app.use(cookieParser());
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
-  
+   
     
-<<<<<<< HEAD
      'https://regno-hospital-app.vercel.app',
-      'https://regno-hospital-api.onrender.com'
+  
 
 
-=======
-          'https://regno-hospital-app.vercel.app',
-          'https://regno-hospital-api.onrender.com'
-        
-      
-         
-    
->>>>>>> 523d5a798bc63b67b3147ff907c1a962ff16269e
 
     ];
    
@@ -73,7 +66,7 @@ app.use(cors(corsOptions));
 
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URL )
+mongoose.connect(process.env.MONGODB_URL )
   .then(() => console.log('MongoDB connected'))
   .catch((err) => console.error('MongoDB connection error:', err));
 
