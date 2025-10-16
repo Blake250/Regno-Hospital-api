@@ -26,7 +26,7 @@ const router = express.Router()
 
 // route configurations
 router.get('/appointments/:id', protect, getSingleBooking)  
-router.get('/fetch-doc/:id',protect, getOneDoctor)  
+router.get('/fetch-doc/:id', getOneDoctor)  
 router.post('/doc-booking/:docId', protect,  bookAppointment )
 
 router.post('/register', registerUser)
