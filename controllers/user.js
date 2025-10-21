@@ -433,73 +433,72 @@ const bookAppointment = asyncHandler(async (req, res) => {
 
 // Canceling an appointment
 const cancelAppointment = asyncHandler(async (req, res) => {
-    const { appointmentId,  } = req.body;
-    const loggedInUser = req.user._id 
-    const appointmentData = await appointmentModel.findById(appointmentId);
+  const { appointmentId } = req.body;
+  const loggedInUser = req.user._id;
 
-    // If no appointment is found
-    if (!appointmentData) {
-        res.status(400);
-        throw new Error('No Appointment Found');
-    }
+  // 1️⃣ Find the appointment
+  const appointmentData = await appointmentModel.findById(appointmentId);
 
-    // // Check if the user is authorized
-    // if ( (loggedInUser.toString() !== 'customer' )  && loggedInUser.toString() !== appointmentData.userId.toString()) {  
-    //     res.status(400);
-    //     throw new Error('User not authorized');
-    // }
+  if (!appointmentData) {
+    res.status(400);
+    throw new Error("No Appointment Found");
+  }
 
-    // Cancel the appointment in the database
-    const getBooking = await appointmentModel.findByIdAndUpdate(
-        appointmentId, 
-        { cancelled: true },  
-        { new: true } ,
-        {runValidators: true } );
+  // 2️⃣ Ensure only the user who booked the appointment can cancel
+  if (appointmentData.userId.toString() !== loggedInUser.toString()) {
+    res.status(403);
+    throw new Error("User not authorized to cancel this appointment");
+  }
 
-    if (!getBooking) {
-        res.status(400);
-        throw new Error(`Appointment Not Available`);
-    }
-
-    // Extract necessary details from the updated booking
-    const { docId, slotDate, slotTime } = getBooking;
-
-    // Fetch the doctor's data from the database
-   // const docData = await docModel.findById( docId );
-
-  const docData =  await docModel.findByIdAndUpdate(
-    docId,
-    {
-      $pull: {
-        [`slot_booked.${slotDate}`]:slotTime
-      }
-    },
-    { new: true, runValidators: true }  
+  // 3️⃣ Mark appointment as cancelled
+  const cancelledAppointment = await appointmentModel.findByIdAndUpdate(
+    appointmentId,
+    { cancelled: true },
+    { new: true, runValidators: true }
   );
-  
-    if (!docData) {
-        res.status(400);
-        throw new Error(`No Doctor Found`);
-    }
 
-    // Remove the canceled slot from the doctor's schedule
-    if (docData.slot_booked[slotDate]) {
-        docData.slot_booked[slotDate] = docData.slot_booked[slotDate].filter(e => e !== slotTime);
+  if (!cancelledAppointment) {
+    res.status(400);
+    throw new Error("Failed to cancel appointment");
+  }
 
-    //  await  docData.markModified('slot_booked');
-        
-        // Save the updated doctor data
-        await docData.save();
-        
-        console.log(`The appointment slot ${slotTime} on ${slotDate} has been canceled.`);
-    }
+  const { docId, slotDate, slotTime } = cancelledAppointment;
 
-    res.status(200).json({
-        success: true,
-        message: "Appointment canceled successfully",
-    });
+  // 4️⃣ Fetch doctor data
+  const doctor = await docModel.findById(docId);
+
+  if (!doctor) {
+    res.status(400);
+    throw new Error("Doctor not found");
+  }
+
+  // 5️⃣ Remove the booked slot for that date
+  if (
+    doctor.slots_booked &&
+    doctor.slots_booked[slotDate] &&
+    Array.isArray(doctor.slots_booked[slotDate])
+  ) {
+    doctor.slots_booked[slotDate] = doctor.slots_booked[slotDate].filter(
+      (time) => time !== slotTime
+    );
+
+    // Let Mongoose know the nested object changed
+    doctor.markModified("slots_booked");
+    await doctor.save();
+
+    console.log(
+      `✅ The appointment slot ${slotTime} on ${slotDate} has been canceled.`
+    );
+  } else {
+    console.log(`ℹ️ No booked slot found for ${slotDate} on this doctor.`);
+  }
+
+  // 6️⃣ Send success response
+  res.status(200).json({
+    success: true,
+    message: "Appointment canceled successfully",
+  });
 });
-
 
 
 
@@ -580,7 +579,7 @@ const getAllBookings = asyncHandler(async (req, res) => {
 
   // Now find all appointments where this doctor is involved
   const bookings = await appointmentModel.find({ userId: userId }).sort({ createdAt: -1 }) 
-  .populate('userId', 'name user')
+  .populate('userId', 'name  email photo')
   .populate({
     path: 'docId',
     populate: {

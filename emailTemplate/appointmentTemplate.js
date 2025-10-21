@@ -44,7 +44,10 @@ const appointmentSuccessEmail = (name, appointment) => {
           button: {
             color: "#48cfad",
             text: "Go to Dashboard",
-            link: "http://localhost:5173/my-booking", 
+            link: "https://regno-hospital-api.onrender.com"
+
+
+           
           },
         },
         outro: "Thank you for choosing Regno Hospital. We wish you good health!"
