@@ -34,8 +34,9 @@ router.post('/login', loginUser)
 router.get('/logout', logoutUser )
 router.get('/get-status', getLoginStatus)
 router.get('/get-docs',  getAllDoctors);
+router.post('/doc-booking/:docId',  bookAppointment )
 router.get('/get-user', protect, getUser )
-router.post('/doc-booking/:docId', protect,  bookAppointment )
+
 router.get('/appointments/:id', protect, getSingleBooking)  
 router.patch('/update-user', protect,updateUser)
 router.patch('/update-photo', protect, updatePhoto)
