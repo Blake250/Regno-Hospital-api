@@ -157,11 +157,10 @@ const  user = await User.findOne({email:email})
            expires:new Date(Date.now() + 1000 * 86400 ),
            secure:true,
            sameSite: 'none',
-           
-          
-        })    
-        
-        res.status(201).json({user  
+
+        })
+
+        res.status(201).json({user
           :{
             id: user._id,
             name: user.name,
@@ -365,15 +364,15 @@ const bookAppointment = asyncHandler(async (req, res) => {
         throw new Error('User not found');
     }
 
-    const slot_booked = docData.slot_booked || {};
-    if (slot_booked[slotDate]?.includes(slotTime)) {
+    const slots_booked = docData.slot_booked || {};
+    if (slots_booked[slotDate]?.includes(slotTime)) {
         res.status(400);
         throw new Error('Time slot not available');
     } 
 
-    slot_booked[slotDate] = [...(slot_booked[slotDate] || []), slotTime];
+    slots_booked[slotDate] = [...(slots_booked[slotDate] || []), slotTime];
 
-     docData = await docModel.findByIdAndUpdate(docId, { slot_booked: slot_booked }, {new:true} ).populate('user', 'email name')
+     docData = await docModel.findByIdAndUpdate(docId, { slots_booked: slots_booked }, {new:true} ).populate('user', 'email name')
     //  .populate({
     //   path:'user',
     //   populate:{
