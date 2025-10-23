@@ -44,7 +44,7 @@ const appointmentSuccessEmail = (name, appointment) => {
           button: {
             color: "#48cfad",
             text: "Go to Dashboard",
-            link: "https://regno-hospital-api.onrender.com"
+            link: 'https://regno-hospital-app.vercel.app'
 
 
            
