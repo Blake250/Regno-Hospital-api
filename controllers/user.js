@@ -364,7 +364,7 @@ const bookAppointment = asyncHandler(async (req, res) => {
         throw new Error('User not found');
     }
 
-    const slots_booked = docData.slot_booked || {};
+    const slots_booked = docData.slots_booked || {};
     if (slots_booked[slotDate]?.includes(slotTime)) {
         res.status(400);
         throw new Error('Time slot not available');
