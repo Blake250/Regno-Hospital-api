@@ -318,204 +318,230 @@ const updatePhoto = asyncHandler(async(req,res)=>{
 
   
 
+// const bookAppointment = asyncHandler(async (req, res) => {
+//   const { paymentMethod, slotDate, slotTime } = req.body;
+//   const docId = req.params.docId ? req.params.docId.trim() : req.params.docId;
+//   const userId = req.user._id;
+
+//   if (!slotTime) {
+//     return res.status(400).json({ message: "Missing time slot" });
+//   }
+
+//   if (!slotDate) {
+//     return res.status(400).json({ message: "Missing date slot" });
+//   }
+
+//   if (!docId || !mongoose.Types.ObjectId.isValid(docId)) {
+//     return res.status(400).json({ message: "Invalid doctor ID" });
+//   }
+
+//   // Fetch doctor and user
+//   let docData = await docModel.findById(docId).populate("user", "name email");
+//   if (!docData?.available) {
+//     return res.status(404).json({ message: "Doctor not found" });
+//   }
+
+//   const userData = await User.findById(userId).select("-password");
+//   if (!userData) {
+//     return res.status(400).json({ message: "User not found" });
+//   }
+
+//   // ✅ Check if this slot already exists in appointments
+//   const existingAppointment = await appointmentModel.findOne({
+//     docId: docId,
+//     slotDate,
+//     slotTime,
+//   });
+
+//   if (existingAppointment) {
+//     return res.status(400).json({ message: "Time slot not available" });
+//   }
+
+//   // ✅ Check & update doctor's booked slots
+//   const slots_booked = docData.slots_booked || {};
+//   if (slots_booked[slotDate]?.includes(slotTime)) {
+//     return res.status(400).json({ message: "Time slot not available" });
+//   }
+
+//   slots_booked[slotDate] = [...(slots_booked[slotDate] || []), slotTime];
+//   docData.slots_booked = slots_booked;
+//   docData.markModified("slots_booked");
+//   await docData.save();
+
+//   // ✅ Create appointment
+//   const appointmentData = {
+//     userId,
+//     docId: docData._id,
+//     slotDate,
+//     slotTime,
+//     amount: docData.fees,
+//     userData,
+//     docData,
+//     date: new Date(),
+//     paymentMethod,
+//   };
+
+//   const newAppointment = await new appointmentModel(appointmentData).save();
+
+//   if (!newAppointment) {
+//     return res.status(400).json({ message: "Booking unsuccessful" });
+//   }
+
+//   // Send email
+//   const subject = "New appointment booked successfully on Regno Hospital";
+//   const send_to = userData.email || "ozoekwecelestine@gmail.com";
+//   const template = appointmentSuccessEmail(userData?.name, newAppointment);
+//   const reply_to = "no_reply@gmail.com";
+
+//   await sendEmail(subject, send_to, template, reply_to);
+
+//   res.status(200).json({
+//     message: "Appointment booked successfully",
+//     appointment: newAppointment,
+//   });
+// });
+
+
+
+
+
+
+
 const bookAppointment = asyncHandler(async (req, res) => {
-  const { paymentMethod, slotDate, slotTime } = req.body;
-  const docId = req.params.docId ? req.params.docId.trim() : req.params.docId;
-  const userId = req.user._id;
+    const {paymentMethod, slotDate, slotTime} = req.body;
+  const docId= req.params.docId? req.params?.docId.trim() : req.params?.docId ;  
+//    const { docId } = req.params;
+  const userId= req.user._id 
+   console.log(`The doc ID IS ${docId} and the userID is ${userId}`)
 
-  if (!slotTime) {
-    return res.status(400).json({ message: "Missing time slot" });
+
+      // Check if slotData and slotTime are received correctly
+      if (!slotTime) {
+        return res.status(400).json({ message: 'Missing time slot  ' });
+      }
+  
+
+      if (!slotDate) {
+        return res.status(400).json({ message: 'Missing   date slot ' });
+      }
+
+
+    if (!docId) {
+        res.status(400);
+        throw new Error('Invalid doctor ID')
+
+    }
+   console.log( `the docId is ${docId}`)
+
+  
+   if (!mongoose.Types.ObjectId.isValid(docId)) {
+    res.status(400);
+    throw new Error('Invalid doc ID format');
   }
+        let docData;
+     docData = await docModel.findById(docId).populate('user', 'name email ');  
+     console.log(`The doctor data is ${docData}`)
+    if (!docData?.available) {
+        res.status(404);
+        throw new Error('Doctor not found');
+    }
 
-  if (!slotDate) {
-    return res.status(400).json({ message: "Missing date slot" });
-  }
+    const userData = await User.findById(userId).select(`-password`);  
+   console.log(`i have the ${userData} now`)
+    if (!userData) {
+        res.status(400);
+        throw new Error('User not found');
+    }
 
-  if (!docId || !mongoose.Types.ObjectId.isValid(docId)) {
-    return res.status(400).json({ message: "Invalid doctor ID" });
-  }
 
-  // Fetch doctor and user
-  let docData = await docModel.findById(docId).populate("user", "name email");
-  if (!docData?.available) {
-    return res.status(404).json({ message: "Doctor not found" });
-  }
-
-  const userData = await User.findById(userId).select("-password");
-  if (!userData) {
-    return res.status(400).json({ message: "User not found" });
-  }
-
-  // ✅ Check if this slot already exists in appointments
-  const existingAppointment = await appointmentModel.findOne({
+      const existingAppointment = await appointmentModel.findOne({
     docId: docId,
     slotDate,
     slotTime,
   });
 
   if (existingAppointment) {
-    return res.status(400).json({ message: "Time slot not available" });
-  }
-
-  // ✅ Check & update doctor's booked slots
-  const slots_booked = docData.slots_booked || {};
-  if (slots_booked[slotDate]?.includes(slotTime)) {
-    return res.status(400).json({ message: "Time slot not available" });
-  }
-
-  slots_booked[slotDate] = [...(slots_booked[slotDate] || []), slotTime];
-  docData.slots_booked = slots_booked;
-  docData.markModified("slots_booked");
-  await docData.save();
-
-  // ✅ Create appointment
-  const appointmentData = {
-    userId,
-    docId: docData._id,
-    slotDate,
-    slotTime,
-    amount: docData.fees,
-    userData,
-    docData,
-    date: new Date(),
-    paymentMethod,
-  };
-
-  const newAppointment = await new appointmentModel(appointmentData).save();
-
-  if (!newAppointment) {
-    return res.status(400).json({ message: "Booking unsuccessful" });
-  }
-
-  // Send email
-  const subject = "New appointment booked successfully on Regno Hospital";
-  const send_to = userData.email || "ozoekwecelestine@gmail.com";
-  const template = appointmentSuccessEmail(userData?.name, newAppointment);
-  const reply_to = "no_reply@gmail.com";
-
-  await sendEmail(subject, send_to, template, reply_to);
-
-  res.status(200).json({
-    message: "Appointment booked successfully",
-    appointment: newAppointment,
-  });
-});
-
-
-
-
-
-
-
-// const bookAppointment = asyncHandler(async (req, res) => {
-//     const {paymentMethod, slotDate, slotTime} = req.body;
-//   const docId= req.params.docId? req.params?.docId.trim() : req.params?.docId ;  
-// //    const { docId } = req.params;
-//   const userId= req.user._id 
-//    console.log(`The doc ID IS ${docId} and the userID is ${userId}`)
-
-
-//       // Check if slotData and slotTime are received correctly
-//       if (!slotTime) {
-//         return res.status(400).json({ message: 'Missing time slot  ' });
-//       }
   
+     res.status(400);
+        throw new Error('Time Slot Not Availble');
+  }
 
-//       if (!slotDate) {
-//         return res.status(400).json({ message: 'Missing   date slot ' });
-//       }
-
-
-//     if (!docId) {
-//         res.status(400);
-//         throw new Error('Invalid doctor ID')
-
-//     }
-//    console.log( `the docId is ${docId}`)
-
-  
-//    if (!mongoose.Types.ObjectId.isValid(docId)) {
-//     res.status(400);
-//     throw new Error('Invalid doc ID format');
-//   }
-//         let docData;
-//      docData = await docModel.findById(docId).populate('user', 'name email ');  
-//      console.log(`The doctor data is ${docData}`)
-//     if (!docData?.available) {
-//         res.status(404);
-//         throw new Error('Doctor not found');
-//     }
-
-//     const userData = await User.findById(userId).select(`-password`);  
-//    console.log(`i have the ${userData} now`)
-//     if (!userData) {
-//         res.status(400);
-//         throw new Error('User not found');
-//     }
-
-//     const slots_booked = docData.slots_booked || {};
-//     if (slots_booked[slotDate]?.includes(slotTime)) {
-//         res.status(400);
-//         throw new Error('Time slot not available');
-//     } 
+    const slots_booked = docData.slots_booked || {};
+    if (slots_booked[slotDate]?.includes(slotTime)) {
+        res.status(400);
+        throw new Error('Time slot not available');
+    } 
 
 
 
 
 
-//     slots_booked[slotDate] = [...(slots_booked[slotDate] || []), slotTime];
+    slots_booked[slotDate] = [...(slots_booked[slotDate] || []), slotTime];
 
-//      docData = await docModel.findByIdAndUpdate(docId, { slots_booked: slots_booked }, {new:true} ).populate('user', 'email name')
-//     //  .populate({
-//     //   path:'user',
-//     //   populate:{
-//     //     path:'docId',
-//     //     model:'User',
-//     //   //  select: ''
+     docData = await docModel.findByIdAndUpdate(docId, { slots_booked: slots_booked }, {new:true} ).populate('user', 'email name')
+    //  .populate({
+    //   path:'user',
+    //   populate:{
+    //     path:'docId',
+    //     model:'User',
+    //   //  select: ''
 
-//     //   }
-//     //  });
+    //   }
+    //  });
 
 
-//    docData.markModified('slots_booked');
-// await docData.save();
+   docData.markModified('slots_booked');
+await docData.save();
 
-//      if (!docData) {
-//       res.status(500);
-//       throw new Error('Failed to update doctor with new slot');
-//     }
+     if (!docData) {
+      res.status(500);
+      throw new Error('Failed to update doctor with new slot');
+    }
      
  
 
-//     const appointmentData = {
-//         userId,
-//         docId:docData._id,
-//         slotDate,
-//         slotTime,
-//         amount: docData.fees,
-//         userData,
-//         docData,
-//         date: new Date(),
-//        paymentMethod,
-//        // description
+    const appointmentData = {
+        userId,
+        docId:docData._id,
+        slotDate,
+        slotTime,
+        amount: docData.fees,
+        userData,
+        docData,
+        date: new Date(),
+       paymentMethod,
+       // description
   
-//     };
+    };
 
-//         // In backend controller before booking
+        // In backend controller before booking
 
-//   const newAppointment = await new appointmentModel(appointmentData).save();
+  const newAppointment = await new appointmentModel(appointmentData).save();
 
-//     if(!newAppointment){
-//       res.status(400)
-//       throw new Error(`booking unsuccessful`)
-//     }
+    if(!newAppointment){
+      res.status(400)
+      throw new Error(`booking unsuccessful`)
+    }
 
-//     const subject = 'new order successfully  booked on Regno hospital'
-//   const  send_to =  userData.email || 'ozoekwecelestine@gmail.com'
-//  //  const template = appointmentSuccessEmail(userData?.name, slotDate,slotTime )
-//  const template = appointmentSuccessEmail(userData?.name, newAppointment);
+    const subject = 'new order successfully  booked on Regno hospital'
+  const  send_to =  userData.email || 'ozoekwecelestine@gmail.com'
+ //  const template = appointmentSuccessEmail(userData?.name, slotDate,slotTime )
+ const template = appointmentSuccessEmail(userData?.name, newAppointment);
 
-//  const reply_to = 'no_reply@gmail.com'
+ const reply_to = 'no_reply@gmail.com'
+
+
+
+ res.status(200).json({
+  message: 'Appointment booked successfully',
+  appointment: newAppointment,
+});
+
+// Send email asynchronously
+sendEmail(subject, send_to, template, reply_to)
+  .then(() => console.log("✅ Email sent successfully"))
+  .catch(err => console.error("❌ Email send failed:", err));
+
 
 
 //  await sendEmail(subject, send_to, template, reply_to)
@@ -524,7 +550,7 @@ const bookAppointment = asyncHandler(async (req, res) => {
 //         message: 'Appointment booked successfully',
 //         appointment: newAppointment,
 //     });
-// });
+});
 
 
 
