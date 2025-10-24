@@ -314,6 +314,8 @@ const updatePhoto = asyncHandler(async(req,res)=>{
     }
 })
 
+
+
   
 
 
@@ -350,7 +352,7 @@ const bookAppointment = asyncHandler(async (req, res) => {
     throw new Error('Invalid doc ID format');
   }
         let docData;
-     docData = await docModel.findById(docId).populate('user', 'name email');  
+     docData = await docModel.findById(docId).populate('user', 'name email ');  
      console.log(`The doctor data is ${docData}`)
     if (!docData?.available) {
         res.status(404);
@@ -383,6 +385,9 @@ const bookAppointment = asyncHandler(async (req, res) => {
     //   }
     //  });
 
+
+   docData.markModified('slots_booked');
+await docData.save();
 
      if (!docData) {
       res.status(500);
@@ -427,6 +432,84 @@ const bookAppointment = asyncHandler(async (req, res) => {
         appointment: newAppointment,
     });
 });
+
+
+
+
+
+
+// const bookAppointment = asyncHandler(async (req, res) => {
+//   const { paymentMethod, slotDate, slotTime } = req.body;
+//   const docId = req.params.docId?.trim();
+//   const userId = req.user._id;
+
+//   if (!slotDate || !slotTime) {
+//     return res.status(400).json({ message: "Missing slot date or time" });
+//   }
+
+//   if (!mongoose.Types.ObjectId.isValid(docId)) {
+//     return res.status(400).json({ message: "Invalid doctor ID" });
+//   }
+
+//   // Fetch doctor data
+//   const docData = await docModel.findById(docId).populate("user", "name email");
+//   if (!docData) {
+//     return res.status(404).json({ message: "Doctor not found" });
+//   }
+
+//   // Fetch user data
+//   const userData = await User.findById(userId).select("-password");
+//   if (!userData) {
+//     return res.status(404).json({ message: "User not found" });
+//   }
+
+//   // Get current slots_booked map
+//   const slots_booked = docData.slots_booked || {};
+
+//   // Convert Map to plain object if necessary
+//   const booked = slots_booked instanceof Map ? Object.fromEntries(slots_booked) : slots_booked;
+
+//   // Check if slot already taken
+//   if (booked[slotDate]?.includes(slotTime)) {
+//     return res.status(400).json({ message: "This time slot is no longer available" });
+//   }
+
+//   // Add new booking time
+//   booked[slotDate] = [...(booked[slotDate] || []), slotTime];
+
+//   // Update doctor’s booked slots
+//   docData.slots_booked = booked;
+//   await docData.save();
+
+//   // Create appointment record
+//   const newAppointment = await appointmentModel.create({
+//     userId,
+//     docId,
+//     slotDate,
+//     slotTime,
+//     amount: docData.fees,
+//     paymentMethod,
+//   });
+
+//   if (!newAppointment) {
+//     return res.status(400).json({ message: "Booking unsuccessful" });
+//   }
+
+//   // Send confirmation email
+//   const subject = "Appointment booked successfully on Regno Hospital";
+//   const send_to = userData.email;
+//   const template = appointmentSuccessEmail(userData.name, newAppointment);
+//   const reply_to = "no_reply@gmail.com";
+
+//   await sendEmail(subject, send_to, template, reply_to);
+
+//   res.status(200).json({
+//     message: "Appointment booked successfully",
+//     appointment: newAppointment,
+//   });
+// });
+
+
 
 
 
@@ -496,6 +579,7 @@ const cancelAppointment = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     message: "Appointment canceled successfully",
+    
   });
 });
 
