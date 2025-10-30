@@ -532,24 +532,24 @@ await docData.save();
 
 
 
- res.status(200).json({
-  message: 'Appointment booked successfully',
-  appointment: newAppointment,
-});
+//  res.status(200).json({
+//   message: 'Appointment booked successfully',
+//   appointment: newAppointment,
+// });
 
-// Send email asynchronously
-sendEmail(subject, send_to, template, reply_to)
-  .then(() => console.log("✅ Email sent successfully"))
-  .catch(err => console.error("❌ Email send failed:", err));
+// // Send email asynchronously
+// sendEmail(subject, send_to, template, reply_to)
+//   .then(() => console.log("✅ Email sent successfully"))
+//   .catch(err => console.error("❌ Email send failed:", err));
 
 
 
-//  await sendEmail(subject, send_to, template, reply_to)
+ await sendEmail(subject, send_to, template, reply_to)
 
-//     res.status(200).json({
-//         message: 'Appointment booked successfully',
-//         appointment: newAppointment,
-//     });
+    res.status(200).json({
+        message: 'Appointment booked successfully',
+        appointment: newAppointment,
+    });
 });
 
 
